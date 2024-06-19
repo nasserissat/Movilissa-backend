@@ -6,19 +6,31 @@ using Movilissa_api.Data.Repositories;
 using Movilissa_api.Logic;
 
 var builder = WebApplication.CreateSlimBuilder(args);
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
 });
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        builder.Configuration.GetConnectionString("MovilissaConnection"),
         new MySqlServerVersion(new Version(8, 0, 32))
     ));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(GenericLogic<>));
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+
+app.UseCors("AllowWebApp");
 
 app.Run();
 

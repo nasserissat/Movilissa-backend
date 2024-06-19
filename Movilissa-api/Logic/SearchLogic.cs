@@ -17,5 +17,4 @@ public class SearchLogic
         var filteredSchedules = schedules.AsQueryable();
         return filteredSchedules.ToList();
     }
-    
 }
