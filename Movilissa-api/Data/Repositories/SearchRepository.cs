@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Data.Context;
+using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Models;
 
 namespace Movilissa_api.Data.Repositories;
 
-public class SearchRepository
+public class SearchRepository  : ISearchRepository
 {
     private readonly ApplicationDbContext _context;
     public SearchRepository (ApplicationDbContext context)

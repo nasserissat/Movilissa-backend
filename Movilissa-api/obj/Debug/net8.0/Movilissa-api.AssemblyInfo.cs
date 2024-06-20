@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Movilissa-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6bc8bd16663274faae79fb870f311d8506f3255")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa2aec2b37b5dd674610d0ebedee7ad5f87841c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Movilissa-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Movilissa-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

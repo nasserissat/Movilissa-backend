@@ -15,17 +15,18 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-});
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("MovilissaConnection"),
-        new MySqlServerVersion(new Version(8, 0, 32))
-    ));
+
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+
 builder.Services.AddScoped(typeof(GenericLogic<>));
+builder.Services.AddScoped(typeof(SearchLogic));
+
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
@@ -33,10 +34,3 @@ app.UseHttpsRedirection();
 app.UseCors("AllowWebApp");
 
 app.Run();
-
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
-
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-}

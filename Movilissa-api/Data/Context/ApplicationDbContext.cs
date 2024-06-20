@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Models;
-using Route = Microsoft.AspNetCore.Routing.Route;
-
+using Route = Movilissa_api.Models.Route;
 namespace Movilissa_api.Data.Context;
 
 public class ApplicationDbContext: DbContext
@@ -33,7 +32,7 @@ public class ApplicationDbContext: DbContext
             // Configuración de User
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(e => e.UserId);
+                entity.HasKey(e => e.Id);
                 
                 entity.Property(e => e.PasswordHash)
                     .IsRequired();
@@ -63,7 +62,7 @@ public class ApplicationDbContext: DbContext
 
                 entity.HasOne(e => e.User)
                     .WithMany(u => u.Tickets)
-                    .HasForeignKey(e => e.UserId)
+                    .HasForeignKey(e => e.Id)
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(e => e.Status)
