@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa-api", "Movilissa-api\Movilissa-api.csproj", "{8C60D825-0140-4186-9C5E-33C38E624AEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa.Api", "Movilissa.Api\Movilissa.Api.csproj", "{8C60D825-0140-4186-9C5E-33C38E624AEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa.core", "Movilissa.core\Movilissa.core.csproj", "{DE44AA85-A10F-473A-BC37-541341BBF04C}"
 EndProject

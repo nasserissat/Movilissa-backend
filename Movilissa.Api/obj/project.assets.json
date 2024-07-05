@@ -854,11 +854,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa-api/Movilissa-api.csproj",
-      "projectName": "Movilissa-api",
-      "projectPath": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa-api/Movilissa-api.csproj",
+      "projectUniqueName": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.Api/Movilissa.Api.csproj",
+      "projectName": "Movilissa.Api",
+      "projectPath": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.Api/Movilissa.Api.csproj",
       "packagesPath": "/Users/nasseremilissatavares/.nuget/packages/",
-      "outputPath": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa-api/obj/",
+      "outputPath": "/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.Api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/nasseremilissatavares/.nuget/NuGet/NuGet.Config"
