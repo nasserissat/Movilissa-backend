@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Data.Context;
 using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Data.Repositories;
+using Movilissa_api.Infrastructure.Extensions;
 using Movilissa_api.Logic;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -17,15 +18,11 @@ builder.Services.AddCors(options =>
 });
 
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<ISearchRepository, SearchRepository>();
+// Add services to the container.
+builder.Services.AddControllers();
 
-builder.Services.AddScoped(typeof(GenericLogic<>));
-builder.Services.AddScoped(typeof(SearchLogic));
-
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

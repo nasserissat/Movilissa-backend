@@ -1,0 +1,12 @@
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/bin/Debug/net8.0/Movilissa.core.deps.json
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/bin/Debug/net8.0/Movilissa.core.dll
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/bin/Debug/net8.0/Movilissa.core.pdb
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.AssemblyInfoInputs.cache
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.AssemblyInfo.cs
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.csproj.CoreCompileInputs.cache
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.sourcelink.json
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.dll
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/refint/Movilissa.core.dll
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/Movilissa.core.pdb
+/Users/nasseremilissatavares/Documents/Negocios/Algorissa/Softwares/Movilissa/Movilissa-api/Movilissa.core/obj/Debug/net8.0/ref/Movilissa.core.dll

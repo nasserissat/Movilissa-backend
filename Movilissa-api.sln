@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa-api", "Movilissa-api\Movilissa-api.csproj", "{8C60D825-0140-4186-9C5E-33C38E624AEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa.core", "Movilissa.core\Movilissa.core.csproj", "{DE44AA85-A10F-473A-BC37-541341BBF04C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movilissa.Infrastructure", "Movilissa.Infrastructure\Movilissa.Infrastructure.csproj", "{05981C8F-B924-4AC1-B3A0-76AC1EE981F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{8C60D825-0140-4186-9C5E-33C38E624AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C60D825-0140-4186-9C5E-33C38E624AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C60D825-0140-4186-9C5E-33C38E624AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE44AA85-A10F-473A-BC37-541341BBF04C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE44AA85-A10F-473A-BC37-541341BBF04C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE44AA85-A10F-473A-BC37-541341BBF04C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE44AA85-A10F-473A-BC37-541341BBF04C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05981C8F-B924-4AC1-B3A0-76AC1EE981F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05981C8F-B924-4AC1-B3A0-76AC1EE981F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05981C8F-B924-4AC1-B3A0-76AC1EE981F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05981C8F-B924-4AC1-B3A0-76AC1EE981F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
