@@ -11,10 +11,10 @@ public class SearchLogic
     {
         _searchRepository = searchRepository;
     }
-    public async Task<IEnumerable<Schedule>> SearchSchedulesAsync(int origin, int destination, DateTime? date, int company)
-    {
-        var schedules = await _searchRepository.SearchSchedulesAsync(origin,  destination, date, company);
-        var filteredSchedules = schedules.AsQueryable();
-        return filteredSchedules.ToList();
-    }
+    // public async Task<IEnumerable<Schedule>> SearchSchedulesAsync(int origin, int destination, DateTime? date, int company)
+    // {
+    //     var schedules = await _searchRepository.SearchSchedulesAsync(origin,  destination, date, company);
+    //     var filteredSchedules = schedules.AsQueryable();
+    //     return filteredSchedules.ToList();
+    // }
 }

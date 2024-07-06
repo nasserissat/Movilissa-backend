@@ -15,6 +15,4 @@ public interface IGenericRepository<T> where T : class
     Task Delete(T entity);
     
     Task Atomic(Func<Task> operation);
-
-
 }

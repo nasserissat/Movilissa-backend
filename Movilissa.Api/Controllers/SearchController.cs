@@ -14,11 +14,11 @@ public class SearchController : ControllerBase
     {
         _searchLogic = searchLogic;
     }
-    [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<Schedule>>> SearchSchedules(int origin, int destination, DateTime? date, int company)
-    {
-        var schedules = await _searchLogic.SearchSchedulesAsync(origin, destination, date, company);
-        return Ok(schedules);
-    }
+    // [HttpGet("search")]
+    // public async Task<ActionResult<IEnumerable<Schedule>>> SearchSchedules(int origin, int destination, DateTime? date, int company)
+    // {
+    //     var schedules = await _searchLogic.SearchSchedulesAsync(origin, destination, date, company);
+    //     return Ok(schedules);
+    // }
 
 }

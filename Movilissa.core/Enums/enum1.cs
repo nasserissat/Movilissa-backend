@@ -1,5 +1,6 @@
 namespace Movilissa_api.Enums;
 
-public enum enum1 {
-
+public enum GenericStatus {
+    Inactive,
+    Active,
 }

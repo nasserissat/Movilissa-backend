@@ -11,7 +11,7 @@ public class Invoice
     public int StatusId { get; private set; }
 
     public int UserId { get; set; }
-    public int OaymentId { get; set; }
+    public int PaymentId { get; set; }
 
     public User User { get; set; }
     public virtual Payment Payment { get; set; }

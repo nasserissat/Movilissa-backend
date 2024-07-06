@@ -15,7 +15,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = _context.Set<T>();
     }
-
    
     public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
     {
