@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Movilissa_api.Data.Context;
 using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Data.Repositories;
+using Movilissa.core.Interfaces;
+using Movilissa.Infrastructure.Repositories;
 
 namespace Movilissa_api.Infrastructure.Extensions
 {

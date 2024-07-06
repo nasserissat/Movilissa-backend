@@ -1,9 +1,9 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Data.Context;
-using Movilissa_api.Data.IRepositories;
+using Movilissa.core.Interfaces;
 
-namespace Movilissa_api.Data.Repositories;
+namespace Movilissa.Infrastructure.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
@@ -26,41 +26,68 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             query = query.Where(predicate);
         }
 
-        if (includes != null && includes.Any())
+        if (includes.Length != 0)
         {
             query = includes.Aggregate(query, (current, include) => current.Include(include));
         }
 
         return await query.ToListAsync();
     }
-
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<IReadOnlyList<T>> GetAllAsync()
     {
-        return await _dbSet.FindAsync(id);
+        var list = await _dbSet.ToListAsync();
+        return list.AsReadOnly();
     }
-
-    public async Task<T> AddAsync(T entity)
+    public async Task<T?> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
     {
-        await _dbSet.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        var query = includes.Aggregate(_dbSet.AsQueryable(), (current, include) => current.Include(include));
+        var entity = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         return entity;
     }
 
-    public async Task<bool> UpdateAsync(T entity)
-    {
-        _context.Entry(entity).State = EntityState.Modified;
-        return await _context.SaveChangesAsync() > 0;
-    }
-
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
         var entity = await _dbSet.FindAsync(id);
-        if (entity == null)
+        return entity;
+    }
+
+    public async Task AddAsync(T entity)
+    {
+        await _dbSet.AddAsync(entity);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task Update(T data)
+    {
+       _dbSet.Update(data);
+        await _context.SaveChangesAsync();
+    }
+    public async Task Delete(T data)
+    {
+        _dbSet.Remove(data);
+        await _context.SaveChangesAsync();
+    }
+    
+    
+    public async Task Atomic(Func<Task> operation)
+    {
+
+        if (_context.Database.CurrentTransaction != null)
         {
-            return false;
+            await operation();
+            return;
         }
 
-        _dbSet.Remove(entity);
-        return await _context.SaveChangesAsync() > 0;
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            await operation();
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Exception in atomic data operation.", ex);
+        }
     }
 }

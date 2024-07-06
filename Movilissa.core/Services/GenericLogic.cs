@@ -1,4 +1,5 @@
 using Movilissa_api.Data.IRepositories;
+using Movilissa.core.Interfaces;
 
 namespace Movilissa_api.Logic;
 
@@ -21,18 +22,18 @@ public class GenericLogic<T> where T : class
         return await _repository.GetByIdAsync(id);
     }
 
-    public async Task<T> AddAsync(T entity)
+    public async Task AddAsync(T entity)
     {
-        return await _repository.AddAsync(entity);
+         await _repository.AddAsync(entity);
     }
 
-    public async Task<bool> UpdateAsync(T entity)
+    public async Task UpdateAsync(T entity)
     {
-        return await _repository.UpdateAsync(entity);
+         await _repository.Update(entity);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(T entity)
     {
-        return await _repository.DeleteAsync(id);
+         await _repository.Delete(entity);
     }
 }
