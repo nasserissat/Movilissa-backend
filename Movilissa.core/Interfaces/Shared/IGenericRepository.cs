@@ -4,13 +4,13 @@ namespace Movilissa.core.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {
-    Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null,
+    Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? predicate = null,
         params Expression<Func<T, object>>[] includes);
 
-    Task<IReadOnlyList<T>> GetAllAsync();
-    Task<T?> GetByIdAsync(int id);
-    Task<T?> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes);
-    Task<T> AddAsync(T entity);
+    Task<IReadOnlyList<T>> GetAll();
+    Task<T?> GetById(int id);
+    Task<T?> GetById(int id, params Expression<Func<T, object>>[] includes);
+    Task<T> Add(T entity);
     Task Update(T entity);
     Task Delete(T entity);
     

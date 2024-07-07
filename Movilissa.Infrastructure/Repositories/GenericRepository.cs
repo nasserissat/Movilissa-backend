@@ -16,7 +16,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
    
-    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
+    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = _dbSet;
 
@@ -32,25 +32,25 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
         return await query.ToListAsync();
     }
-    public async Task<IReadOnlyList<T>> GetAllAsync()
+    public async Task<IReadOnlyList<T>> GetAll()
     {
         var list = await _dbSet.ToListAsync();
         return list.AsReadOnly();
     }
-    public async Task<T?> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
+    public async Task<T?> GetById(int id, params Expression<Func<T, object>>[] includes)
     {
         var query = includes.Aggregate(_dbSet.AsQueryable(), (current, include) => current.Include(include));
         var entity = await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         return entity;
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetById(int id)
     {
         var entity = await _dbSet.FindAsync(id);
         return entity;
     }
 
-    public async Task<T> AddAsync(T entity)
+    public async Task<T> Add(T entity)
     {
         var result = await _dbSet.AddAsync(entity);
         await _context.SaveChangesAsync();

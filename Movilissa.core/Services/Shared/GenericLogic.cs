@@ -14,31 +14,6 @@ public class GenericLogic<T> where T : class
     {
         _repository = repository;
     }
-
-    public async Task<IEnumerable<T>> GetAllAsync()
-    {
-        return await _repository.GetAllAsync();
-    }
-
-    public async Task<T> GetByIdAsync(int id)
-    {
-        return await _repository.GetByIdAsync(id);
-    }
-
-    public async Task AddAsync(T entity)
-    {
-         await _repository.AddAsync(entity);
-    }
-
-    public async Task UpdateAsync(T entity)
-    {
-         await _repository.Update(entity);
-    }
-
-    public async Task DeleteAsync(T entity)
-    {
-         await _repository.Delete(entity);
-    }
     public static Task<List<Item>> GetGenericStatus() => Task.FromResult(GetListFromEnum<GenericStatus>());
     
     private static List<Item> GetListFromEnum<T>() where T : Enum

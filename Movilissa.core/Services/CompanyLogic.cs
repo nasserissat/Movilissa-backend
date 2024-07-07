@@ -28,18 +28,18 @@ public class CompanyLogic
     #region Configuration
     public async  Task<IReadOnlyList<Item>> GetAllCountries()
     {
-        var countries = await _countryRepository.GetAllAsync();
+        var countries = await _countryRepository.GetAll();
         return countries.Select(c => new Item { Id = c.Id, Description = c.Name }).ToList();
     }
     
     public async Task<IReadOnlyList<Item>> GetProvinceList()
     {
-        var provinces = await _provinceRepository.GetAllAsync();
+        var provinces = await _provinceRepository.GetAll();
         return provinces.Select(p => new Item { Id = p.Id, Description = p.Name }).ToList();
     }
     public async Task<IReadOnlyList<Item>> GetCompanyList()
     {
-        var companies = await _companyRepository.GetAllAsync();
+        var companies = await _companyRepository.GetAll();
         return companies.Select(c => new Item { Id = c.Id, Description = c.Name }).ToList();
     }
 
@@ -50,7 +50,7 @@ public class CompanyLogic
     #region Company
     public async Task<IReadOnlyList<CompanyList>> GetCompanySummaryList()
     {
-        var companies = await _companyRepository.GetAllAsync(null, c => c.Buses, c => c.Status
+        var companies = await _companyRepository.GetAll(null, c => c.Buses, c => c.Status
         );        return companies.Select(c => new CompanyList 
         {
             Id = c.Id,
@@ -78,12 +78,12 @@ public class CompanyLogic
             Score = data.Score,
             Status = (int)GenericStatus.Activo
         };
-        var result =await _companyRepository.AddAsync(newCompany);
+        var result =await _companyRepository.Add(newCompany);
         return result.Id;
     }
     public async Task<int> UpdateCompany(int id, CompanyData companyData)
     {
-        var company = await _companyRepository.GetByIdAsync(id);
+        var company = await _companyRepository.GetById(id);
         if (company == null)
             throw new Exception("Compañía no encontrada.");
 
@@ -101,7 +101,7 @@ public class CompanyLogic
     }
     public async Task<int> InactivateCompany(int companyId)
     {
-        var company = await _companyRepository.GetByIdAsync(companyId);
+        var company = await _companyRepository.GetById(companyId);
         if (company == null)
             throw new Exception("Compañía no encontrada.");
 
@@ -112,7 +112,7 @@ public class CompanyLogic
     }
     public async Task<int> ActivateCompany(int companyId)
     {
-        var company = await _companyRepository.GetByIdAsync(companyId);
+        var company = await _companyRepository.GetById(companyId);
         if (company == null)
             throw new Exception("Compañía no encontrada.");
 
@@ -128,7 +128,7 @@ public class CompanyLogic
     // Obtener todas las sucursales de una empresa
     public async Task<List<BranchList>> GetAllBranchesForCompany(int companyId)
     {
-        var branches = await _branchRepository.GetAllAsync(b => b.CompanyId == companyId, b => b.Province, b => b.Company);
+        var branches = await _branchRepository.GetAll(b => b.CompanyId == companyId, b => b.Province, b => b.Company);
         return branches.Select(b => new BranchList
         {
             Id = b.Id,
@@ -155,14 +155,14 @@ public class CompanyLogic
             Status = (int)GenericStatus.Activo
         };
 
-        await _branchRepository.AddAsync(newBranch);
+        await _branchRepository.Add(newBranch);
         return newBranch.Id;
     }
 
     // Actualizar una sucursal existente
     public async Task<int> UpdateBranch(int branchId, BranchData data)
     {
-        var branch = await _branchRepository.GetByIdAsync(branchId);
+        var branch = await _branchRepository.GetById(branchId);
         if (branch == null)
             throw new Exception("Sucursal no encontrada.");
 
@@ -181,7 +181,7 @@ public class CompanyLogic
     // Desactivar una sucursal
     public async Task<int> InactivateBranch(int branchId)
     {
-        var branch = await _branchRepository.GetByIdAsync(branchId);
+        var branch = await _branchRepository.GetById(branchId);
         if (branch == null)
             throw new Exception("Sucursal no encontrada.");
 
@@ -194,7 +194,7 @@ public class CompanyLogic
     // Activar una sucursal
     public async Task<int> ActivateBranch(int branchId)
     {
-        var branch = await _branchRepository.GetByIdAsync(branchId);
+        var branch = await _branchRepository.GetById(branchId);
         if (branch == null)
             throw new Exception("Sucursal no encontrada.");
 

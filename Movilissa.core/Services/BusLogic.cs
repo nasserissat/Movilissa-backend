@@ -2,7 +2,9 @@ using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Enums;
 using Movilissa_api.Models;
 using Movilissa.core.DTOs.Bus;
+using Movilissa.core.DTOs.Bus.AmenityDTOs;
 using Movilissa.core.DTOs.Shared;
+using Movilissa.core.Interfaces;
 
 namespace Movilissa_api.Logic;
 
@@ -10,20 +12,26 @@ public class BusLogic
 {
     private readonly IBusRepository _busRepository;
     private readonly IBusScheduleRepository _busScheduleRepository;
+    private readonly IGenericRepository<Amenity> _amenityRepository;
+    private readonly IGenericRepository<BusType> _busTypeRepository;
 
-    public BusLogic(IBusRepository busRepository, IBusScheduleRepository busScheduleRepository)
+
+
+    public BusLogic(IBusRepository busRepository, IBusScheduleRepository busScheduleRepository, IGenericRepository<Amenity> amenityRepository, IGenericRepository<BusType> busTypeRepository)
     {
         _busRepository = busRepository;
         _busScheduleRepository = busScheduleRepository;
+        _amenityRepository = amenityRepository;
+        _busTypeRepository = busTypeRepository;
 
     }
 
     #region Bus
     
     // Obtener todos los buses
-    public async Task<IEnumerable<BusList>> GetAllBusesAsync()
+    public async Task<IEnumerable<BusList>> GetAllBuses()
     {
-        var buses = await _busRepository.GetAllAsync(null, b => b.Company, b => b.BusType);
+        var buses = await _busRepository.GetAll(null, b => b.Company, b => b.BusType);
         return buses.Select(b => new BusList
         {
             Id = b.Id,
@@ -37,7 +45,7 @@ public class BusLogic
     }
     
     // Crear un nuevo Bus
-    public async Task<int> CreateBusAsync(BusData busDTO)
+    public async Task<int> CreateBus(BusData busDTO)
     {
         if (busDTO == null)
             throw new ArgumentNullException(nameof(busDTO));
@@ -62,7 +70,7 @@ public class BusLogic
             bus.Amenities.Add(amenity);
         }
 
-        await _busRepository.AddAsync(bus);
+        await _busRepository.Add(bus);
         return bus.Id;
     }
 
@@ -87,9 +95,9 @@ public class BusLogic
         };
     }
     
-    public async Task UpdateBusAsync(int id, BusData busData)
+    public async Task UpdateBus(int id, BusData busData)
     {
-        var bus = await _busRepository.GetByIdAsync(id);
+        var bus = await _busRepository.GetById(id);
         if (bus == null)
             throw new Exception("Autobús no encontrado");
 
@@ -108,9 +116,9 @@ public class BusLogic
     }
 
     // Eliminar un Autobus
-    public async Task DeleteBusAsync(int id)
+    public async Task DeleteBus(int id)
     {
-        var bus = await _busRepository.GetByIdAsync(id);
+        var bus = await _busRepository.GetById(id);
         if (bus == null)
             throw new Exception("Autobús no encontrado");
         if (bus.Status.Id == (int)BusStatusEnum.EnServicio )
@@ -120,12 +128,68 @@ public class BusLogic
     }
 
     #endregion
+    
+    #region BusType
+
+    public async Task<int> CreateBusType(BusTypeData data)
+    {
+        var newBusType = new BusType
+        {
+            Brand = data.Brand.Trim(),
+            Model = data.Model.Trim(),
+            SeatingCapacity = data.SeatingCapacity,
+            CompanyId = data.CompanyId
+        };
+
+        await _busTypeRepository.Add(newBusType);
+        return newBusType.Id;
+    }
+
+    public async Task<IEnumerable<BusTypeList>> GetAllBusTypes()
+    {
+        var busTypes = await _busTypeRepository.GetAll();
+        return busTypes.Select(bt => new BusTypeList
+        {
+            Id = bt.Id,
+            Brand = bt.Brand,
+            Model = bt.Model,
+            SeatingCapacity = bt.SeatingCapacity
+        }).ToList();
+    }
+
+    public async Task<int> UpdateBusType(int id, BusTypeData data)
+    {
+        var busType = await _busTypeRepository.GetById(id);
+        if (busType == null)
+            throw new Exception("BusType not found.");
+
+        busType.Brand = data.Brand.Trim();
+        busType.Model = data.Model.Trim();
+        busType.SeatingCapacity = data.SeatingCapacity;
+        busType.CompanyId = data.CompanyId;
+
+        await _busTypeRepository.Update(busType);
+        return busType.Id;
+    }
+
+    public async Task<int> DeleteBusType(int id)
+    {
+        var busType = await _busTypeRepository.GetById(id);
+        if (busType == null)
+            throw new Exception("BusType not found.");
+
+        await _busTypeRepository.Delete(busType);
+        return busType.Id;
+    }
+
+    #endregion
+
 
     #region BusSchedule
     
     public async Task CreateBusSchedule(int scheduleId, int busId)
     {
-        var bus = await _busRepository.GetByIdAsync(busId, bus => bus.BusType);
+        var bus = await _busRepository.GetById(busId, bus => bus.BusType);
         if (bus == null)
             throw new Exception("Autobús no encontrado.");
 
@@ -136,7 +200,62 @@ public class BusLogic
             AvailableSeats = bus.BusType.SeatingCapacity // Inicializa con la capacidad total del autobús
         };
 
-        await _busScheduleRepository.AddAsync(newBusSchedule);
+        await _busScheduleRepository.Add(newBusSchedule);
     }
     #endregion
+    
+    
+    #region Amenity
+
+    public async Task<int> CreateAmenity(AmenityData data)
+    {
+        var newAmenity = new Amenity
+        {
+            Name = data.Name.Trim(),
+            CompanyId = data.CompanyId
+        };
+
+        await _amenityRepository.Add(newAmenity);
+        return newAmenity.Id;
+    }
+
+    public async Task<IEnumerable<AmenityList>> GetAllAmenities()
+    {
+        var amenities = await _amenityRepository.GetAll();
+        return amenities.Select(a => new AmenityList
+        {
+            Id = a.Id,
+            Name = a.Name
+        }).ToList();
+    }
+
+    public async Task<int> UpdateAmenity(int id, AmenityData data)
+    {
+        var amenity = await _amenityRepository.GetById(id);
+        if (amenity == null)
+            throw new Exception("Amenity not found.");
+
+        amenity.Name = data.Name.Trim();
+        amenity.CompanyId = data.CompanyId;
+
+        await _amenityRepository.Update(amenity);
+        return amenity.Id;
+    }
+
+    public async Task<int> DeleteAmenity(int id)
+    {
+        var amenity = await _amenityRepository.GetById(id);
+        if (amenity == null)
+            throw new Exception("Amenity not found.");
+
+        await _amenityRepository.Delete(amenity);
+        return amenity.Id;
+    }
+
+    #endregion
+    
+    
+    
+    
+
 }
