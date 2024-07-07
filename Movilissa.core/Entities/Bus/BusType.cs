@@ -8,5 +8,7 @@ public class BusType
     public string Brand { get; set; }
     public string Model { get; set; }
     public int SeatingCapacity { get; set; }
+    public int CompanyId { get; set; }
+    public virtual Company Company { get; set; }
     
 }

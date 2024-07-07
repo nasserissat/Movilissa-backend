@@ -11,4 +11,6 @@ public class InvoiceDetail
     public decimal TotalAmount  { get; set; }
     public Ticket Ticket { get; set; }
     public Invoice Invoice { get; set; }
+    public int CompanyId { get; set; }
+    public virtual Company Company { get; set; }
 }

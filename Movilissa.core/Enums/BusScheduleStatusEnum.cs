@@ -1,6 +1,6 @@
 namespace Movilissa_api.Enums;
 
-public enum BusScheduleStatus
+public enum BusScheduleStatusEnum
 {
     Ready = 1,
     InTransit,

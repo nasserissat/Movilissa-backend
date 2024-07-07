@@ -12,9 +12,11 @@ public class Invoice
 
     public int UserId { get; set; }
     public int PaymentId { get; set; }
+    public int CompanyId { get; set; }
 
     public User User { get; set; }
     public virtual Payment Payment { get; set; }
     public virtual InvoiceStatus Status { get; set; }
     public ICollection<InvoiceDetail> InvoiceDetails { get; set; }
+    public virtual Company Company { get; set; }
 }
