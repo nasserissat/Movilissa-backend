@@ -133,6 +133,7 @@ public class CompanyLogic
         {
             Id = b.Id,
             Name = b.Name,
+            Address = b.Address,
             Latitude = b.Latitude,
             Longitude = b.Longitude,
             Province = new Item { Id = b.Province.Id, Description = b.Province.Name },
@@ -146,6 +147,7 @@ public class CompanyLogic
         var newBranch = new Branch
         {
             Name = data.Name,
+            Address = data.Address,
             Latitude = data.Latitude,
             Longitude = data.Longitude,
             CompanyId = data.CompanyId,
@@ -165,6 +167,7 @@ public class CompanyLogic
             throw new Exception("Sucursal no encontrada.");
 
         branch.Name = data.Name;
+        branch.Address = data.Address;
         branch.Latitude = data.Latitude;
         branch.Longitude = data.Longitude;
         branch.CompanyId = data.CompanyId;

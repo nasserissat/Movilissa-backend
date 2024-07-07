@@ -1,6 +1,8 @@
 using Movilissa_api.Data.IRepositories;
+using Movilissa_api.Enums;
 using Movilissa_api.Models;
 using Movilissa.core.DTOs.Bus;
+using Movilissa.core.DTOs.Shared;
 
 namespace Movilissa_api.Logic;
 
@@ -17,6 +19,22 @@ public class BusLogic
     }
 
     #region Bus
+    
+    // Obtener todos los buses
+    public async Task<IEnumerable<BusList>> GetAllBusesAsync()
+    {
+        var buses = await _busRepository.GetAllAsync(null, b => b.Company, b => b.BusType);
+        return buses.Select(b => new BusList
+        {
+            Id = b.Id,
+            IdentificationNumber = b.IdentificationNumber,
+            LicensePlate = b.LicensePlate,
+            Brand = b.BusType.Brand,
+            Model = b.BusType.Model,
+            SeatingCapacity = b.BusType.SeatingCapacity,
+            Status = Item.From((BusStatusEnum)b.StatusId)
+        }).ToList();
+    }
     
     // Crear un nuevo Bus
     public async Task<int> CreateBusAsync(BusData busDTO)
@@ -48,42 +66,58 @@ public class BusLogic
         return bus.Id;
     }
 
-    // Obtener un Bus por ID
-    public async Task<Bus> GetBusByIdAsync(int busId)
+    // Obtener el detalle de un Bus
+    public async Task<BusDetailed> GetBusDetailed(int id)
     {
-        var bus = await _busRepository.GetByIdAsync(busId);
+        var bus = await _busRepository.GetBusWithDetails(id);
         if (bus == null)
-            throw new Exception("Autobús no encontrado.");
+            throw new Exception("Autobús no encontrado");
 
-        return bus;
+        return new BusDetailed
+        {
+            Id = bus.Id,
+            IdentificationNumber = bus.IdentificationNumber,
+            LicensePlate = bus.LicensePlate,
+            CompanyName = bus.Company.Name,
+            Model = bus.BusType.Model,
+            Brand = bus.BusType.Brand,
+            SeatingCapacity = bus.BusType.SeatingCapacity,
+            Status = Item.From((BusStatusEnum)bus.StatusId),
+            Amenities = bus.Amenities.Select(a => new Item { Id = a.Amenity.Id, Description = a.Amenity.Name }).ToList(),
+        };
     }
-
-    // Obtener todos los Buses
-    public async Task<IEnumerable<Bus>> GetAllBusesAsync()
+    
+    public async Task UpdateBusAsync(int id, BusData busData)
     {
-        return await _busRepository.GetAllAsync();
-    }
-
-    // Actualizar un Bus
-    public async Task UpdateBusAsync(Bus bus)
-    {
+        var bus = await _busRepository.GetByIdAsync(id);
         if (bus == null)
-            throw new ArgumentNullException(nameof(bus));
+            throw new Exception("Autobús no encontrado");
+
+        bus.IdentificationNumber = busData.IdentificationNumber.Trim();
+        bus.LicensePlate = busData.LicensePlate.Trim();
+        bus.CompanyId = busData.CompanyId;
+        bus.BusTypeId = busData.BusTypeId;
+
+        bus.Amenities.Clear();
+        foreach (var amenityId in busData.AmenityIds)
+        {
+            bus.Amenities.Add(new BusAmenity { AmenityId = amenityId, BusId = bus.Id });
+        }
 
         await _busRepository.Update(bus);
     }
 
-    // Eliminar un Bus
-    public async Task DeleteBusAsync(int busId)
+    // Eliminar un Autobus
+    public async Task DeleteBusAsync(int id)
     {
-        var bus = await _busRepository.GetByIdAsync(busId);
+        var bus = await _busRepository.GetByIdAsync(id);
         if (bus == null)
-            throw new Exception("Autobús no encontrado para eliminar.");
+            throw new Exception("Autobús no encontrado");
+        if (bus.Status.Id == (int)BusStatusEnum.EnServicio )
+            throw new Exception("No se puede eliminar un autobús que está en servicio");
 
         await _busRepository.Delete(bus);
     }
-
-    
 
     #endregion
 

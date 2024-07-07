@@ -7,6 +7,8 @@ public class Bus
     public string LicensePlate { get; set; }
     public int CompanyId { get; set; }
     public int BusTypeId { get; set; }
+    
+    public int StatusId { get; set; }
 
 
     public virtual Company Company { get; set; }
