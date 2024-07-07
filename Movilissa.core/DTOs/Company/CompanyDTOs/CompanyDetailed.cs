@@ -1,6 +1,8 @@
+using Movilissa.core.DTOs.Shared;
+
 namespace Movilissa.core.DTOs.Company.BranchDTOs;
 
-public record struct CompanyDetail(
+public record struct CompanyDetailed(
     int Id,
     string Name,
     string Tel,
@@ -10,5 +12,5 @@ public record struct CompanyDetail(
     string? Facebook,
     string? Website,
     double? Score,
-    string Status
+    Item Status
 );

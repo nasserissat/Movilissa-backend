@@ -1,11 +1,12 @@
+using Movilissa.core.DTOs.Shared;
+
 namespace Movilissa.core.DTOs.Company.BranchDTOs;
 
-public record struct BranchDetail(
+public record struct BranchList(
     int Id,
     string Name,
     double Latitude,
     double Longitude,
-    int ProvinceId,
-    string ProvinceName,
-    CompanyDetail Company
+    Item Province,
+    Item Status
 );

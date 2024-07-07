@@ -121,17 +121,84 @@ public class CompanyLogic
         await _companyRepository.Update(company);
         return company.Id;
     }
-
-
-
     
     #endregion
 
     #region Branch
-    public async Task<IReadOnlyList<Branch>> GetAllBranchesForCompany(int companyId)
+    // Obtener todas las sucursales de una empresa
+    public async Task<List<BranchList>> GetAllBranchesForCompany(int companyId)
     {
-        var branches = await _branchRepository.GetAllAsync(b => b.CompanyId == companyId, b => b.Province);
-        return branches.ToList();
+        var branches = await _branchRepository.GetAllAsync(b => b.CompanyId == companyId, b => b.Province, b => b.Company);
+        return branches.Select(b => new BranchList
+        {
+            Id = b.Id,
+            Name = b.Name,
+            Latitude = b.Latitude,
+            Longitude = b.Longitude,
+            Province = new Item { Id = b.Province.Id, Description = b.Province.Name },
+            Status = Item.From((GenericStatus)b.Status)
+        }).ToList();
+    }
+
+    // Crear una nueva sucursal
+    public async Task<int> CreateBranch(BranchData data)
+    {
+        var newBranch = new Branch
+        {
+            Name = data.Name,
+            Latitude = data.Latitude,
+            Longitude = data.Longitude,
+            CompanyId = data.CompanyId,
+            ProvinceId = data.ProvinceId,
+            Status = (int)GenericStatus.Activo
+        };
+
+        await _branchRepository.AddAsync(newBranch);
+        return newBranch.Id;
+    }
+
+    // Actualizar una sucursal existente
+    public async Task<int> UpdateBranch(int branchId, BranchData data)
+    {
+        var branch = await _branchRepository.GetByIdAsync(branchId);
+        if (branch == null)
+            throw new Exception("Sucursal no encontrada.");
+
+        branch.Name = data.Name;
+        branch.Latitude = data.Latitude;
+        branch.Longitude = data.Longitude;
+        branch.CompanyId = data.CompanyId;
+        branch.ProvinceId = data.ProvinceId;
+        branch.Status = data.Status;
+
+        await _branchRepository.Update(branch);
+        return branch.Id;
+    }
+
+    // Desactivar una sucursal
+    public async Task<int> InactivateBranch(int branchId)
+    {
+        var branch = await _branchRepository.GetByIdAsync(branchId);
+        if (branch == null)
+            throw new Exception("Sucursal no encontrada.");
+
+        branch.Status = (int)GenericStatus.Inactivo;
+
+        await _branchRepository.Update(branch);
+        return branch.Id;
+    }
+
+    // Activar una sucursal
+    public async Task<int> ActivateBranch(int branchId)
+    {
+        var branch = await _branchRepository.GetByIdAsync(branchId);
+        if (branch == null)
+            throw new Exception("Sucursal no encontrada.");
+
+        branch.Status = (int)GenericStatus.Activo;
+
+        await _branchRepository.Update(branch);
+        return branch.Id;
     }
     
     #endregion
