@@ -6,8 +6,10 @@ public class Branch
     public string Name { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public int Status { get; set; }
     public int CompanyId { get; set; }
     public int ProvinceId { get; set; }
+
     
     public virtual Province Province { get; set; }
     public virtual Company Company { get; set; }

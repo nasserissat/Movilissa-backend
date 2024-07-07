@@ -11,7 +11,9 @@ public class Company
     public string? Facebook { get; set; }
     public string? Website { get; set; }
     public double? Score { get; set; }
-    public CompanyStatus Status { get; set; }
+
+    public int Status { get; set; }
+    
     public ICollection<Branch> Branches { get; set; }
     public ICollection<Bus> Buses { get; set; }
     public ICollection<Schedule> Schedules { get; set; }

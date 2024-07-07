@@ -1,3 +1,5 @@
+using Movilissa.core.DTOs.Shared;
+
 namespace Movilissa.core.DTOs.Company.BranchDTOs;
 
 public record struct CompanyList(
@@ -7,5 +9,5 @@ public record struct CompanyList(
     string Tel,
     string Email,
     int BusQuantity,
-    ItemDto Status
+    Item Status
 );
