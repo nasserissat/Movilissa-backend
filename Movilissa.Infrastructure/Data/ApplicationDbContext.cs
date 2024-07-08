@@ -13,6 +13,7 @@ public class ApplicationDbContext: DbContext
     public DbSet<TicketStatus> TicketStatuses { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<Schedule> Schedules { get; set; }
+    public DbSet<BusSchedule> BusSchedules { get; set; }
     public DbSet<Route> Routes { get; set; }
     public DbSet<Province> Provinces { get; set; }
     public DbSet<Payment> Payments { get; set; }

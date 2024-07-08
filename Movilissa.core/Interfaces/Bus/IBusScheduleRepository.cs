@@ -5,5 +5,6 @@ namespace Movilissa_api.Data.IRepositories;
 
 public interface IBusScheduleRepository : IGenericRepository<BusSchedule>
 {
-    
+    Task<IEnumerable<BusSchedule>> GetAllBusSchedulesWithDetails();
+
 }

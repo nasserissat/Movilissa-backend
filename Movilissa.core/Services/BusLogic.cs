@@ -14,9 +14,7 @@ public class BusLogic
     private readonly IBusScheduleRepository _busScheduleRepository;
     private readonly IGenericRepository<Amenity> _amenityRepository;
     private readonly IGenericRepository<BusType> _busTypeRepository;
-
-
-
+    
     public BusLogic(IBusRepository busRepository, IBusScheduleRepository busScheduleRepository, IGenericRepository<Amenity> amenityRepository, IGenericRepository<BusType> busTypeRepository)
     {
         _busRepository = busRepository;
@@ -186,22 +184,162 @@ public class BusLogic
 
 
     #region BusSchedule
+    public async Task<IEnumerable<BusScheduleList>> GetAllBusSchedules()
+    {
+        var schedules = await _busScheduleRepository.GetAllBusSchedulesWithDetails();
+        return schedules.Select(s => new BusScheduleList
+        {
+            Id = s.Id,
+            BusIdentificationNumber = s.Bus.IdentificationNumber,
+            ScheduleDescription = $"Schedule {s.ScheduleId}",
+            AvailableSeats = s.AvailableSeats,
+            BusStatus = s.Bus.Status.Name,
+            ScheduleStatus = s.Status.ToString(),
+            RouteOrigin = s.Schedule.Route.Origin.Name,
+            RouteDestinations = string.Join(", ", s.Schedule.Route.Destinations.Select(d => d.Destination.Name)),
+            BusType = s.Bus.BusType.Brand + " " + s.Bus.BusType.Model,
+            BusSeatingCapacity = s.Bus.BusType.SeatingCapacity
+        }).ToList();
+    }
     
-    public async Task CreateBusSchedule(int scheduleId, int busId)
+    public async Task<int> CreateBusSchedule(int scheduleId, int busId)
     {
         var bus = await _busRepository.GetById(busId, bus => bus.BusType);
         if (bus == null)
             throw new Exception("Autobús no encontrado.");
 
-        var newBusSchedule = new BusSchedule
+        var schedule = new BusSchedule
         {
             BusId = busId,
             ScheduleId = scheduleId,
-            AvailableSeats = bus.BusType.SeatingCapacity // Inicializa con la capacidad total del autobús
+            AvailableSeats = bus.BusType.SeatingCapacity,
+            Status = BusScheduleStatus.Ready
         };
 
-        await _busScheduleRepository.Add(newBusSchedule);
+        await _busScheduleRepository.Add(schedule);
+        return schedule.Id;
     }
+    // Asignar un horario a un bus
+        public async Task AssignScheduleToBus(int busId, int scheduleId)
+        {
+            var bus = await _busRepository.GetById(busId);
+            var schedule = await _busScheduleRepository.GetById(scheduleId);
+
+            if (bus == null || schedule == null)
+                throw new Exception("Bus o Horario no encontrado");
+
+            if (bus.StatusId == (int)BusStatusEnum.FueradeServicio)
+                throw new Exception("No se puede asignar un horario a un autobús fuera de servicio");
+
+            var busSchedule = new BusSchedule
+            {
+                BusId = busId,
+                ScheduleId = scheduleId,
+                AvailableSeats = bus.BusType.SeatingCapacity,
+                Status = BusScheduleStatus.Ready
+            };
+
+            await _busScheduleRepository.Add(busSchedule);
+            bus.StatusId = (int)BusStatusEnum.Reservado; // Cambiar el estado del bus a Reservado
+            await _busRepository.Update(bus);
+        }
+
+        // Iniciar el trayecto del bus
+        public async Task StartBusJourney(int busScheduleId)
+        {
+            var busSchedule = await _busScheduleRepository.GetById(busScheduleId);
+            if (busSchedule == null)
+                throw new Exception("Horario del bus no encontrado");
+
+            var bus = await _busRepository.GetById(busSchedule.BusId);
+            if (bus == null)
+                throw new Exception("Bus no encontrado");
+
+            if (bus.StatusId == (int)BusStatusEnum.FueradeServicio)
+                throw new Exception("El bus no puede estar fuera de servicio mientras está en tránsito");
+
+            busSchedule.Status = BusScheduleStatus.InTransit;
+            bus.StatusId = (int)BusStatusEnum.EnServicio; // Cambiar el estado del bus a EnServicio
+            await _busScheduleRepository.Update(busSchedule);
+            await _busRepository.Update(bus);
+        }
+
+        // Finalizar el trayecto del bus
+        public async Task CompleteBusJourney(int busScheduleId)
+        {
+            var busSchedule = await _busScheduleRepository.GetById(busScheduleId);
+            if (busSchedule == null)
+                throw new Exception("Horario del bus no encontrado");
+
+            var bus = await _busRepository.GetById(busSchedule.BusId);
+            if (bus == null)
+                throw new Exception("Bus no encontrado");
+
+            busSchedule.Status = BusScheduleStatus.Completed;
+            bus.StatusId = (int)BusStatusEnum.Disponible; // Cambiar el estado del bus a Disponible
+            await _busScheduleRepository.Update(busSchedule);
+            await _busRepository.Update(bus);
+        }
+
+        // Actualizar la capacidad del bus durante el trayecto
+        public async Task UpdateBusCapacity(int busScheduleId, int seatsSold)
+        {
+            var busSchedule = await _busScheduleRepository.GetById(busScheduleId);
+            if (busSchedule == null)
+                throw new Exception("Horario del bus no encontrado");
+
+            if (busSchedule.Status != BusScheduleStatus.InTransit && busSchedule.Status != BusScheduleStatus.Ready)
+                throw new Exception("No se puede actualizar la capacidad del bus en el estado actual");
+            
+            busSchedule.AvailableSeats -= seatsSold;
+            if (busSchedule.AvailableSeats < 0)
+                throw new Exception("No hay suficientes asientos disponibles");
+
+            await _busScheduleRepository.Update(busSchedule);
+        }
+
+        // Manejar retrasos
+        public async Task DelayBusJourney(int busScheduleId, TimeSpan delay)
+        {
+            var busSchedule = await _busScheduleRepository.GetById(busScheduleId);
+            if (busSchedule == null)
+                throw new Exception("Horario del bus no encontrado");
+
+            busSchedule.Status = BusScheduleStatus.Delayed;
+            busSchedule.Schedule.ArrivalTime = busSchedule.Schedule.ArrivalTime?.Add(delay);
+
+            await _busScheduleRepository.Update(busSchedule);
+        }
+
+        // Cancelar un viaje
+        public async Task CancelBusJourney(int busScheduleId)
+        {
+            var busSchedule = await _busScheduleRepository.GetById(busScheduleId);
+            if (busSchedule == null)
+                throw new Exception("Horario del bus no encontrado");
+
+            var bus = await _busRepository.GetById(busSchedule.BusId);
+            if (bus == null)
+                throw new Exception("Bus no encontrado");
+
+            busSchedule.Status = BusScheduleStatus.Cancelled;
+            bus.StatusId = (int)BusStatusEnum.Disponible; // Cambiar el estado del bus a Disponible
+            await _busScheduleRepository.Update(busSchedule);
+            await _busRepository.Update(bus);
+        }
+        
+    public async Task<int> UpdateBusSchedule(int id, BusScheduleData data)
+    {
+        var schedule = await _busScheduleRepository.GetById(id);
+        if (schedule == null)
+            throw new Exception("Schedule not found.");
+
+        schedule.AvailableSeats = data.AvailableSeats;
+        await _busScheduleRepository.Update(schedule);
+        return schedule.Id;
+    }
+    
+    
     #endregion
     
     
