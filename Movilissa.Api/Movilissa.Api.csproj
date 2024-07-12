@@ -14,4 +14,8 @@
       <ProjectReference Include="..\Movilissa.Infrastructure\Movilissa.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
+    </ItemGroup>
+
 </Project>

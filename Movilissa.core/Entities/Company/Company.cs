@@ -18,4 +18,6 @@ public class Company
     public ICollection<Bus> Buses { get; set; }
     public ICollection<Schedule> Schedules { get; set; }
     
+    public ICollection<User> Users { get; set; }
+    
 }
