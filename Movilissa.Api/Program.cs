@@ -1,19 +1,12 @@
-
-using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Data.Context;
+using Movilissa_api.Data.IRepositories;
+using Movilissa_api.Data.Repositories;
 using Movilissa_api.Infrastructure.Extensions;
-using Movilissa_api.Models;
+using Movilissa_api.Logic;
 
 var builder = WebApplication.CreateSlimBuilder(args);
-
-builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
-builder.Services.AddAuthorization();
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddApiEndpoints();
-    
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowWebApp", policy =>

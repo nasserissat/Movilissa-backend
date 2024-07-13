@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Models;
 using Route = Movilissa_api.Models.Route;
 namespace Movilissa_api.Data.Context;
 
-public class ApplicationDbContext : IdentityDbContext<User>
+public class ApplicationDbContext: DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -31,17 +30,28 @@ public class ApplicationDbContext : IdentityDbContext<User>
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configuración de User
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(u => u.CompanyId).IsRequired(false);
+                entity.HasKey(e => e.Id);
+                
+                entity.Property(e => e.PasswordHash)
+                    .IsRequired();
 
-                // Configurar la relación uno a muchos con Company
-                entity.HasOne(u => u.Company)
-                    .WithMany(c => c.Users)
-                    .HasForeignKey(u => u.CompanyId)
-                    .OnDelete(DeleteBehavior.SetNull); 
+                entity.HasIndex(e => e.Email)
+                    .IsUnique();
+
+                // Relaciones
+                entity.HasOne(e => e.Province)
+                    .WithMany()
+                    .HasForeignKey(e => e.ProvinceId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Country)
+                    .WithMany()
+                    .HasForeignKey(e => e.CountryId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
-
 
             // Configuración de Ticket
             modelBuilder.Entity<Ticket>(entity =>
@@ -68,4 +78,5 @@ public class ApplicationDbContext : IdentityDbContext<User>
             });
 
         }
+    
 }
