@@ -14,4 +14,5 @@ public class AuthController : Controller
     {
         _genericLogic = genericLogic;
     }
+    
 }

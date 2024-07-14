@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Movilissa_api.Data.Context;
 
@@ -11,9 +12,11 @@ using Movilissa_api.Data.Context;
 namespace Movilissa_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240714202544_MakeStatusIdNullable")]
+    partial class MakeStatusIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,18 +125,23 @@ namespace Movilissa_api.Migrations
 
             modelBuilder.Entity("Movilissa_api.Models.BusAmenity", b =>
                 {
-                    b.Property<int>("BusId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AmenityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("BusId")
                         .HasColumnType("int");
 
-                    b.HasKey("BusId", "AmenityId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AmenityId");
+
+                    b.HasIndex("BusId");
 
                     b.ToTable("BusAmenity");
                 });
@@ -687,7 +695,7 @@ namespace Movilissa_api.Migrations
             modelBuilder.Entity("Movilissa_api.Models.BusAmenity", b =>
                 {
                     b.HasOne("Movilissa_api.Models.Amenity", "Amenity")
-                        .WithMany("Buses")
+                        .WithMany()
                         .HasForeignKey("AmenityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -939,11 +947,6 @@ namespace Movilissa_api.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("Province");
-                });
-
-            modelBuilder.Entity("Movilissa_api.Models.Amenity", b =>
-                {
-                    b.Navigation("Buses");
                 });
 
             modelBuilder.Entity("Movilissa_api.Models.Bus", b =>

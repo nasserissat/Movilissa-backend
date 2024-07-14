@@ -7,4 +7,5 @@ public class Amenity
 
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; }
+    public ICollection<BusAmenity> Buses { get; set; } 
 }

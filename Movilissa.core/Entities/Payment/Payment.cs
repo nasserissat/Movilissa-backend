@@ -8,11 +8,9 @@ public class Payment
     public string PaymentMethod { get; set; }
     public int UserId { get; set; }
     public int TicketId { get; set; }
-    public int InvoiceId { get; set; }
     public int CompanyId { get; set; }
     public User User { get; set; }
     public Ticket Ticket { get; set; } 
-    public Invoice Invoice { get; set; }
     public virtual Company Company { get; set; }
 
 }

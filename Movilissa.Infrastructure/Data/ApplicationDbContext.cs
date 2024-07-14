@@ -76,6 +76,19 @@ public class ApplicationDbContext: DbContext
                     .HasForeignKey(e => e.ScheduleId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+            
+            modelBuilder.Entity<BusAmenity>()
+                .HasKey(ba => new { ba.BusId, ba.AmenityId });
+
+            modelBuilder.Entity<BusAmenity>()
+                .HasOne(ba => ba.Bus)
+                .WithMany(b => b.Amenities)
+                .HasForeignKey(ba => ba.BusId);
+
+            modelBuilder.Entity<BusAmenity>()
+                .HasOne(ba => ba.Amenity)
+                .WithMany(a => a.Buses)
+                .HasForeignKey(ba => ba.AmenityId);
 
         }
     

@@ -8,7 +8,7 @@ public class Bus
     public int CompanyId { get; set; }
     public int BusTypeId { get; set; }
     
-    public int StatusId { get; set; }
+    public int? StatusId { get; set; }
 
 
     public virtual Company Company { get; set; }
