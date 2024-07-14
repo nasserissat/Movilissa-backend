@@ -5,6 +5,7 @@ using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Data.Repositories;
 using Movilissa_api.Infrastructure.Extensions;
 using Movilissa_api.Logic;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.Services.AddCors(options =>
@@ -24,7 +25,17 @@ builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 
