@@ -8,7 +8,7 @@ using Movilissa_api.Data.Context;
 
 #nullable disable
 
-namespace Movilissa_api.Migrations
+namespace Movilissa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

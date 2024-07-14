@@ -9,11 +9,11 @@ using Movilissa_api.Data.Context;
 
 #nullable disable
 
-namespace Movilissa_api.Migrations
+namespace Movilissa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240714202544_MakeStatusIdNullable")]
-    partial class MakeStatusIdNullable
+    [Migration("20240714205321_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,23 +125,18 @@ namespace Movilissa_api.Migrations
 
             modelBuilder.Entity("Movilissa_api.Models.BusAmenity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("BusId")
                         .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AmenityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BusId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("BusId", "AmenityId");
 
                     b.HasIndex("AmenityId");
-
-                    b.HasIndex("BusId");
 
                     b.ToTable("BusAmenity");
                 });
@@ -695,7 +690,7 @@ namespace Movilissa_api.Migrations
             modelBuilder.Entity("Movilissa_api.Models.BusAmenity", b =>
                 {
                     b.HasOne("Movilissa_api.Models.Amenity", "Amenity")
-                        .WithMany()
+                        .WithMany("Buses")
                         .HasForeignKey("AmenityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -947,6 +942,11 @@ namespace Movilissa_api.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("Movilissa_api.Models.Amenity", b =>
+                {
+                    b.Navigation("Buses");
                 });
 
             modelBuilder.Entity("Movilissa_api.Models.Bus", b =>

@@ -4,15 +4,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Movilissa_api.Migrations
+namespace Movilissa.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class pushModelsToDatabase : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "BusStatus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BusStatus", x => x.Id);
+                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -23,15 +38,20 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Logo = table.Column<string>(type: "longtext", nullable: false)
+                    Tel = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Instagram = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Facebook = table.Column<string>(type: "longtext", nullable: false)
+                    Logo = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Website = table.Column<string>(type: "longtext", nullable: false)
+                    Instagram = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Score = table.Column<double>(type: "double", nullable: true)
+                    Facebook = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Website = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Score = table.Column<double>(type: "double", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,7 +121,29 @@ namespace Movilissa_api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Buses",
+                name: "Amenities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Amenities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Amenities_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "BusType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -110,16 +152,14 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Model = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IdentificationNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     SeatingCapacity = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Buses", x => x.Id);
+                    table.PrimaryKey("PK_BusType", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Buses_Companies_CompanyId",
+                        name: "FK_BusType_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -137,15 +177,11 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Address = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Tel = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Latitude = table.Column<double>(type: "double", nullable: false),
                     Longitude = table.Column<double>(type: "double", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
-                    ProvinceId = table.Column<int>(type: "int", nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false)
+                    ProvinceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,12 +190,6 @@ namespace Movilissa_api.Migrations
                         name: "FK_Branches_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Branches_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -185,12 +215,19 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PasswordHash = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     ProvinceId = table.Column<int>(type: "int", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Users_Countries_CountryId",
                         column: x => x.CountryId,
@@ -207,25 +244,39 @@ namespace Movilissa_api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Amenities",
+                name: "Buses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    IdentificationNumber = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    LicensePlate = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    BusId = table.Column<int>(type: "int", nullable: true)
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    BusTypeId = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Amenities", x => x.Id);
+                    table.PrimaryKey("PK_Buses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Amenities_Buses_BusId",
-                        column: x => x.BusId,
-                        principalTable: "Buses",
+                        name: "FK_Buses_BusStatus_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "BusStatus",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Buses_BusType_BusTypeId",
+                        column: x => x.BusTypeId,
+                        principalTable: "BusType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Buses_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -236,57 +287,75 @@ namespace Movilissa_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     OriginId = table.Column<int>(type: "int", nullable: false),
-                    DestinationId = table.Column<int>(type: "int", nullable: false)
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Routes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Routes_Branches_DestinationId",
-                        column: x => x.DestinationId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Routes_Branches_OriginId",
                         column: x => x.OriginId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Routes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Invoices",
+                name: "BusAmenity",
+                columns: table => new
+                {
+                    BusId = table.Column<int>(type: "int", nullable: false),
+                    AmenityId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BusAmenity", x => new { x.BusId, x.AmenityId });
+                    table.ForeignKey(
+                        name: "FK_BusAmenity_Amenities_AmenityId",
+                        column: x => x.AmenityId,
+                        principalTable: "Amenities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BusAmenity_Buses_BusId",
+                        column: x => x.BusId,
+                        principalTable: "Buses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "RouteDestination",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    InvoiceNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InvoiceDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    NCFNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    TaxRegistrationNumber = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    OaymentId = table.Column<int>(type: "int", nullable: false)
+                    RouteId = table.Column<int>(type: "int", nullable: false),
+                    DestinationId = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.PrimaryKey("PK_RouteDestination", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Invoices_InvoiceStatuses_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "InvoiceStatuses",
+                        name: "FK_RouteDestination_Branches_DestinationId",
+                        column: x => x.DestinationId,
+                        principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Invoices_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_RouteDestination_Routes_RouteId",
+                        column: x => x.RouteId,
+                        principalTable: "Routes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -298,21 +367,19 @@ namespace Movilissa_api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    DepartureDateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ArrivalDateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     RouteId = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
-                    BusId = table.Column<int>(type: "int", nullable: true),
-                    Fare = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    DepartureTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    EstimatedDuration = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DaysOfWeek = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedules", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Schedules_Buses_BusId",
-                        column: x => x.BusId,
-                        principalTable: "Buses",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Schedules_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -323,6 +390,35 @@ namespace Movilissa_api.Migrations
                         name: "FK_Schedules_Routes_RouteId",
                         column: x => x.RouteId,
                         principalTable: "Routes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "BusSchedules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    BusId = table.Column<int>(type: "int", nullable: false),
+                    ScheduleId = table.Column<int>(type: "int", nullable: false),
+                    AvailableSeats = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BusSchedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BusSchedules_Buses_BusId",
+                        column: x => x.BusId,
+                        principalTable: "Buses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BusSchedules_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -340,11 +436,18 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     QRCode = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tickets_Schedules_ScheduleId",
                         column: x => x.ScheduleId,
@@ -367,37 +470,6 @@ namespace Movilissa_api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "InvoiceDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    InvoiceId = table.Column<int>(type: "int", nullable: false),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    SubtotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    TaxAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InvoiceDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InvoiceDetails_Invoices_InvoiceId",
-                        column: x => x.InvoiceId,
-                        principalTable: "Invoices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_InvoiceDetails_Tickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "Tickets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -409,15 +481,15 @@ namespace Movilissa_api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     TicketId = table.Column<int>(type: "int", nullable: false),
-                    InvoiceId = table.Column<int>(type: "int", nullable: false)
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.PaymentId);
                     table.ForeignKey(
-                        name: "FK_Payments_Invoices_InvoiceId",
-                        column: x => x.InvoiceId,
-                        principalTable: "Invoices",
+                        name: "FK_Payments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -435,10 +507,97 @@ namespace Movilissa_api.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    InvoiceNumber = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InvoiceDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    NCFNumber = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TaxRegistrationNumber = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    PaymentId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_InvoiceStatuses_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "InvoiceStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Payments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payments",
+                        principalColumn: "PaymentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    InvoiceId = table.Column<int>(type: "int", nullable: false),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    SubtotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    TaxAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
-                name: "IX_Amenities_BusId",
+                name: "IX_Amenities_CompanyId",
                 table: "Amenities",
-                column: "BusId");
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branches_CompanyId",
@@ -446,18 +605,48 @@ namespace Movilissa_api.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Branches_CountryId",
-                table: "Branches",
-                column: "CountryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Branches_ProvinceId",
                 table: "Branches",
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BusAmenity_AmenityId",
+                table: "BusAmenity",
+                column: "AmenityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BusSchedules_BusId",
+                table: "BusSchedules",
+                column: "BusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BusSchedules_ScheduleId",
+                table: "BusSchedules",
+                column: "ScheduleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BusType_CompanyId",
+                table: "BusType",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buses_BusTypeId",
+                table: "Buses",
+                column: "BusTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Buses_CompanyId",
                 table: "Buses",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buses_StatusId",
+                table: "Buses",
+                column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetails_CompanyId",
+                table: "InvoiceDetails",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
@@ -471,6 +660,16 @@ namespace Movilissa_api.Migrations
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invoices_CompanyId",
+                table: "Invoices",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_PaymentId",
+                table: "Invoices",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Invoices_StatusId",
                 table: "Invoices",
                 column: "StatusId");
@@ -481,10 +680,9 @@ namespace Movilissa_api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_InvoiceId",
+                name: "IX_Payments_CompanyId",
                 table: "Payments",
-                column: "InvoiceId",
-                unique: true);
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_TicketId",
@@ -497,19 +695,24 @@ namespace Movilissa_api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Routes_DestinationId",
-                table: "Routes",
+                name: "IX_RouteDestination_DestinationId",
+                table: "RouteDestination",
                 column: "DestinationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RouteDestination_RouteId",
+                table: "RouteDestination",
+                column: "RouteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Routes_CompanyId",
+                table: "Routes",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Routes_OriginId",
                 table: "Routes",
                 column: "OriginId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Schedules_BusId",
-                table: "Schedules",
-                column: "BusId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_CompanyId",
@@ -522,6 +725,11 @@ namespace Movilissa_api.Migrations
                 column: "RouteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tickets_CompanyId",
+                table: "Tickets",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tickets_ScheduleId",
                 table: "Tickets",
                 column: "ScheduleId");
@@ -530,6 +738,11 @@ namespace Movilissa_api.Migrations
                 name: "IX_Tickets_StatusId",
                 table: "Tickets",
                 column: "StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_CompanyId",
+                table: "Users",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_CountryId",
@@ -552,22 +765,40 @@ namespace Movilissa_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Amenities");
+                name: "BusAmenity");
+
+            migrationBuilder.DropTable(
+                name: "BusSchedules");
 
             migrationBuilder.DropTable(
                 name: "InvoiceDetails");
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "RouteDestination");
+
+            migrationBuilder.DropTable(
+                name: "Amenities");
+
+            migrationBuilder.DropTable(
+                name: "Buses");
 
             migrationBuilder.DropTable(
                 name: "Invoices");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "BusStatus");
+
+            migrationBuilder.DropTable(
+                name: "BusType");
 
             migrationBuilder.DropTable(
                 name: "InvoiceStatuses");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "Schedules");
@@ -579,19 +810,16 @@ namespace Movilissa_api.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Buses");
+                name: "Routes");
 
             migrationBuilder.DropTable(
-                name: "Routes");
+                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "Branches");
 
             migrationBuilder.DropTable(
                 name: "Companies");
-
-            migrationBuilder.DropTable(
-                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "Provinces");
