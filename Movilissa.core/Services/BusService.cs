@@ -8,14 +8,14 @@ using Movilissa.core.Interfaces;
 
 namespace Movilissa_api.Logic;
 
-public class BusLogic
+public class BusService
 {
     private readonly IBusRepository _busRepository;
     private readonly IBusScheduleRepository _busScheduleRepository;
     private readonly IGenericRepository<Amenity> _amenityRepository;
     private readonly IGenericRepository<BusType> _busTypeRepository;
     
-    public BusLogic(IBusRepository busRepository, IBusScheduleRepository busScheduleRepository, IGenericRepository<Amenity> amenityRepository, IGenericRepository<BusType> busTypeRepository)
+    public BusService(IBusRepository busRepository, IBusScheduleRepository busScheduleRepository, IGenericRepository<Amenity> amenityRepository, IGenericRepository<BusType> busTypeRepository)
     {
         _busRepository = busRepository;
         _busScheduleRepository = busScheduleRepository;

@@ -4,19 +4,18 @@ using Movilissa.core.DTOs;
 using Movilissa.core.DTOs.Company.BranchDTOs;
 using Movilissa.core.DTOs.Shared;
 using Movilissa.core.Interfaces;
+using Movilissa.core.Interfaces.IServices;
 
 namespace Movilissa_api.Logic;
 
-public class CompanyLogic
+public class CompanyService : ICompanyService
 {
     private readonly IGenericRepository<Country> _countryRepository;
     private readonly IGenericRepository<Province> _provinceRepository;
     private readonly IGenericRepository<Company> _companyRepository;
     private readonly IGenericRepository<Branch> _branchRepository;
-
-
     
-    public CompanyLogic(IGenericRepository<Country> countryRepository, 
+    public CompanyService(IGenericRepository<Country> countryRepository, 
         IGenericRepository<Province> provinceRepository, IGenericRepository<Company> companyRepository, IGenericRepository<Branch> branchRepository)
     {
         _countryRepository = countryRepository;
@@ -62,6 +61,26 @@ public class CompanyLogic
             Status = Item.From((GenericStatus)c.Status)
             
         }).ToList().AsReadOnly();
+    }
+    public async Task<CompanyList> GetCompanyById(int company_id)
+    {
+        var company = await _companyRepository.GetById(company_id, c => c.Buses, c => c.Status
+        );
+        if(company == null)
+        {
+            throw new Exception("Compañía no encontrada.");
+        }
+        return new CompanyList
+        {
+            Id = company.Id,
+            Logo = company.Logo,
+            Name = company.Name,
+            Tel = company.Tel,
+            Email = company.Email,
+            BusQuantity = company.Buses.Count,
+            Status = Item.From((GenericStatus)company.Status)
+
+        };
     }
     
     public async Task<int> CreateCompany(CompanyData data)

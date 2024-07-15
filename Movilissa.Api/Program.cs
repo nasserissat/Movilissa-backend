@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Movilissa_api.Data.Context;
 using Movilissa_api.Data.IRepositories;
-using Movilissa_api.Data.Repositories;
 using Movilissa_api.Infrastructure.Extensions;
 using Movilissa_api.Logic;
 using Swashbuckle.AspNetCore.SwaggerUI;

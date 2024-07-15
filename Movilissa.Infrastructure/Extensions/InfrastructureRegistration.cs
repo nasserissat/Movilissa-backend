@@ -4,8 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Movilissa_api.Data.Context;
 using Movilissa_api.Data.IRepositories;
-using Movilissa_api.Data.Repositories;
+using Movilissa_api.Logic;
 using Movilissa.core.Interfaces;
+using Movilissa.core.Interfaces.IServices;
 using Movilissa.Infrastructure.Repositories;
 
 namespace Movilissa_api.Infrastructure.Extensions
@@ -18,10 +19,16 @@ namespace Movilissa_api.Infrastructure.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b =>
                 b.MigrationsAssembly("Movilissa.Infrastructure")));
             
-            // Configuring DI for Core and Infrastructure layers
+            // Configuring DI for Repositories
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<ISearchRepository, SearchRepository>();
-            // Añade más repositorios según sea necesario
+            services.AddScoped<IBusRepository, BusRepository>();
+            services.AddScoped<IBusScheduleRepository, BusScheduleRepository>();
+            
+            // Configuring DI for Services
+            services.AddScoped(typeof(IGenericService<>), typeof(IGenericService<>));
+            services.AddScoped<ICompanyService, CompanyService>();
+
+            
 
             return services;
         }
