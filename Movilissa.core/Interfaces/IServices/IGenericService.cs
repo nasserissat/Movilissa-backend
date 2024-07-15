@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Movilissa.core.DTOs.Shared;
 
 namespace Movilissa.core.Interfaces.IServices;
 
@@ -13,6 +14,4 @@ public interface IGenericService<T> where T : class
     Task<T> Add(T entity);
     Task Update(T entity);
     Task Delete(T entity);
-    
-    Task Atomic(Func<Task> operation);
 }

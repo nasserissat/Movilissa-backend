@@ -30,6 +30,7 @@ public class ApplicationDbContext: DbContext
         {
             base.OnModelCreating(modelBuilder);
 
+
             // Configuración de User
             modelBuilder.Entity<User>(entity =>
             {

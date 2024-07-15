@@ -25,7 +25,7 @@ namespace Movilissa_api.Infrastructure.Extensions
             services.AddScoped<IBusScheduleRepository, BusScheduleRepository>();
             
             // Configuring DI for Services
-            services.AddScoped(typeof(IGenericService<>), typeof(IGenericService<>));
+            services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<ICompanyService, CompanyService>();
 
             

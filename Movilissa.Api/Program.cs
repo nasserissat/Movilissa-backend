@@ -7,22 +7,12 @@ using Movilissa_api.Logic;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateSlimBuilder(args);
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowWebApp", policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
 
 
-
+builder.Services.AddInfrastructure(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,14 +20,18 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+
+if(app.Environment.IsDevelopment() || app.Environment.IsProduction()){
+    app.UseDeveloperExceptionPage();
+app.UseSwagger();
+app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseCors("AllowWebApp");
-
+app.UseCors(b => b
+    .AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader()); 
+app.UseAuthentication();;
+app.UseAuthorization();;
+app.MapControllers();
 app.Run();

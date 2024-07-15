@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Movilissa_api.Logic;
 using Movilissa_api.Models;
+using Movilissa.core.Interfaces.IServices;
 
 namespace Movilissa_api.Controllers;
 
@@ -8,11 +9,11 @@ namespace Movilissa_api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : Controller
 {
-    private readonly GenericLogic<User> _genericLogic;
+    private readonly IGenericService<User> _genericService;
 
-    public AuthController(GenericLogic<User> genericLogic)
+    public AuthController(IGenericService<User> genericService)
     {
-        _genericLogic = genericLogic;
+        _genericService = genericService;
     }
     
 }

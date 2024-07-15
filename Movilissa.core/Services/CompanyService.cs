@@ -64,6 +64,9 @@ public class CompanyService : ICompanyService
     }
     public async Task<CompanyList> GetCompanyById(int company_id)
     {
+        var x = await _companyRepository.GetById(company_id);
+        if (x == null) throw new Exception("Company not found");
+        
         var company = await _companyRepository.GetById(company_id, c => c.Buses, c => c.Status
         );
         if(company == null)
