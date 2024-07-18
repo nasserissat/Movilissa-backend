@@ -56,4 +56,39 @@ public class AuthService : IAuthService
 
         return new UserManagerResponse(false, "Intento de inicio de sesión inválido", result.Errors.Select(e => e.Description));
     }
+    
+    public async Task<UserManagerResponse> GenerateResetPasswordTokenAsync(string email)
+    {
+        var user = await _authRepository.FindUserByEmailAsync(email);
+        if (user == null)
+            return new UserManagerResponse(false, "No user found with that email address.");
+
+        var token = await _authRepository.GeneratePasswordResetTokenAsync(user);
+    
+        if (string.IsNullOrEmpty(token))
+            return new UserManagerResponse(false, "Failed to generate password reset token.");
+
+        return new UserManagerResponse(true, "Password reset token generated successfully.", new string[] { token });
+    }
+
+
+    public async Task<UserManagerResponse> ResetPassword(string email, string token, string newPassword)
+    {
+        var user = await _authRepository.FindUserByEmailAsync(email);
+        if (user == null)
+        {
+            return new UserManagerResponse(false, "No user found with that email address.");
+        }
+
+        var result = await _authRepository.ResetPasswordAsync(user, token, newPassword);
+        if (result.Succeeded)
+        {
+            return new UserManagerResponse(true, "Password reset successfully.");
+        }
+        else
+        {
+            return new UserManagerResponse(false, "Failed to reset password", result.Errors.Select(e => e.Description));
+        }
+    }
+    
 }

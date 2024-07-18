@@ -27,6 +27,7 @@ namespace Movilissa_api.Infrastructure.Extensions
             
             // Configuring DI for Services
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<ICompanyService, CompanyService>();
 

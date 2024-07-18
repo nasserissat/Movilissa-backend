@@ -36,4 +36,14 @@ public class AuthRepository : IAuthRepository
         }
         return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt" });
     }
+    public async Task<string> GeneratePasswordResetTokenAsync(User user)
+    {
+        return await _userManager.GeneratePasswordResetTokenAsync(user);
+    }
+
+    
+    public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword)
+    {
+        return await _userManager.ResetPasswordAsync(user, token, newPassword);
+    }
 }

@@ -9,5 +9,8 @@ public interface IAuthService
 {
     Task<UserManagerResponse> RegisterUser(RegisterData data);
     Task<UserManagerResponse> LoginUser(LoginData data);
+    Task<UserManagerResponse> GenerateResetPasswordTokenAsync(string email);
+    Task<UserManagerResponse> ResetPassword(string email, string token, string newPassword);
+    
 
 }
