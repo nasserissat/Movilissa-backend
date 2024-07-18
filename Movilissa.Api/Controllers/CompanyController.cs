@@ -25,12 +25,12 @@ public class CompanyController : ControllerBase
     {
         var authenticated_user_id = 1;
         var user = await _userService.GetById(authenticated_user_id, u => u.Company);
-        if (user == null || user.CompanyId == null)
+        
+        if (user != null && user.CompanyId.HasValue)
         {
-            return NotFound("User or Company not found.");
+            var company = await _companyService.GetCompanyById(user.CompanyId.Value);
+            return Ok(company);
         }
-
-        var company = await _companyService.GetCompanyById(user.CompanyId);
-        return Ok(company);
+        return NotFound("User or Company not found.");
     }
 } 

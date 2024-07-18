@@ -20,11 +20,13 @@ namespace Movilissa_api.Infrastructure.Extensions
                 b.MigrationsAssembly("Movilissa.Infrastructure")));
             
             // Configuring DI for Repositories
+            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBusRepository, BusRepository>();
             services.AddScoped<IBusScheduleRepository, BusScheduleRepository>();
             
             // Configuring DI for Services
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<ICompanyService, CompanyService>();
 
