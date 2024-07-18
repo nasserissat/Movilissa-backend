@@ -10,7 +10,7 @@ public class Invoice
     public string TaxRegistrationNumber { get; set; }
     public int StatusId { get; private set; }
 
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public int PaymentId { get; set; }
     public int CompanyId { get; set; }
 

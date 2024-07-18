@@ -4,7 +4,7 @@ public class Ticket
 {
     public int Id { get; set; }
     public DateTime PurchaseDate { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public int ScheduleId { get; set; }
     public string? SeatNumber { get; set; }
     public string QRCode { get; set; }
