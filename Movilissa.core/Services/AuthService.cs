@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         if (result.Succeeded)
             return new UserManagerResponse(true, "Inicio de sesión exitoso", null, null,  userName);
 
-        return new UserManagerResponse(false, "Intento de inicio de sesión inválido", result.Errors.Select(e => e.Description));
+        return new UserManagerResponse(false, "Usuario o contraseña inválido", result.Errors.Select(e => e.Description));
     }
     
     public async Task<UserManagerResponse> GenerateResetPasswordTokenAsync(string email)

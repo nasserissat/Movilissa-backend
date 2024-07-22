@@ -34,7 +34,7 @@ public class AuthRepository : IAuthRepository
             if (result)
                 return (IdentityResult.Success, (user.FirstName + " " + user.LastName ));
         } 
-        return (IdentityResult.Failed(new IdentityError { Description = "Intento de inicio de sesión inválido" }), null);     
+        return (IdentityResult.Failed(new IdentityError { Description = "Usuario o contraseña inválido" }), null);     
     }
     public async Task<string> GeneratePasswordResetTokenAsync(User user)
     {
