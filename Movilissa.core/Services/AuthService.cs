@@ -50,9 +50,9 @@ public class AuthService : IAuthService
     }
     public async Task<UserManagerResponse> LoginUser(LoginData data)
     {
-        var result = await _authRepository.LoginUser(data.Email, data.Password);
+        var (result, userName) = await _authRepository.LoginUser(data.Email, data.Password);
         if (result.Succeeded)
-            return new UserManagerResponse(true, "Inicio de sesión exitoso");
+            return new UserManagerResponse(true, "Inicio de sesión exitoso", null, null,  userName);
 
         return new UserManagerResponse(false, "Intento de inicio de sesión inválido", result.Errors.Select(e => e.Description));
     }

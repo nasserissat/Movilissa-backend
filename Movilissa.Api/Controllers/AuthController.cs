@@ -41,9 +41,9 @@ public class AuthController : Controller
         var response = await _authService.LoginUser(data);
 
         if (response.IsSuccess)
-            return Ok(new { message = response.Message });
+            return Ok(new { message = response.Message, userName = response.UserName  });
 
-        return BadRequest(new { errors = response.Errors });
+        return BadRequest(new { errors = response.Errors});
     }
     
     [AllowAnonymous]

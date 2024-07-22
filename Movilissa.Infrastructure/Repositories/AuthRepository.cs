@@ -24,7 +24,7 @@ public class AuthRepository : IAuthRepository
         return await _userManager.FindByEmailAsync(email);
     }
 
-    public async Task<IdentityResult> LoginUser(string email, string password)
+    public async Task<(IdentityResult, string)> LoginUser(string email, string password)
     {
         // Este método supone la existencia de algún mecanismo para verificar las credenciales
         var user = await _userManager.FindByEmailAsync(email);
@@ -32,9 +32,9 @@ public class AuthRepository : IAuthRepository
         {
             var result = await _userManager.CheckPasswordAsync(user, password);
             if (result)
-                return IdentityResult.Success;
-        }
-        return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt" });
+                return (IdentityResult.Success, (user.FirstName + " " + user.LastName ));
+        } 
+        return (IdentityResult.Failed(new IdentityError { Description = "Intento de inicio de sesión inválido" }), null);     
     }
     public async Task<string> GeneratePasswordResetTokenAsync(User user)
     {

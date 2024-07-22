@@ -8,7 +8,7 @@ public interface IAuthRepository
 {
     Task<IdentityResult> RegisterUser(User user, string password);
     Task<User> FindUserByEmailAsync(string email);
-    Task<IdentityResult> LoginUser(string email, string password);
+    Task<(IdentityResult, string)> LoginUser(string email, string password);
     Task<string> GeneratePasswordResetTokenAsync(User user);
     Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword);
 }
