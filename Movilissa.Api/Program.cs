@@ -16,7 +16,6 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-
 builder.Services.AddInfrastructure(builder.Configuration);
 // Add services to the container.
 
@@ -32,7 +31,9 @@ builder.Services.AddIdentity<User, IdentityRole>(
             options.Password.RequireLowercase = true;
             options.Password.RequiredLength = 8;
         })
-    .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<CustomIdentityErrorDescriber>();
 
 
 builder.Services.AddAuthentication(auth =>
