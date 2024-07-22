@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Movilissa_api.Logic;
 using Movilissa_api.Models;
@@ -18,7 +20,6 @@ public class AuthController : Controller
     {
         _authService = authService;
         _emailService = emailService;
-
     }
     
     [AllowAnonymous]
@@ -45,6 +46,7 @@ public class AuthController : Controller
         return BadRequest(new { errors = response.Errors });
     }
     
+    [AllowAnonymous]
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(string email)
     {
@@ -52,15 +54,16 @@ public class AuthController : Controller
 
         if (result.IsSuccess)
         {
-            // Enviar correo con el token
-            await _emailService.SendPasswordResetEmail(email, result.Token);
+              var callbackUrl = Url.Action("ResetPassword", "Auth", new { result.Token, email }, Request.Scheme);
+              var message = $"Por favor restablece tu contraseña haciendo clic aquí: <a href='{callbackUrl}'>link</a>";
+            await _emailService.SendEmailAsync(email, "Restablecer contraseña", message);
             return Ok(new { message = "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña." });
         }
 
         return BadRequest(new { errors = result.Message });
     }
 
-    
+    [AllowAnonymous]
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordData data)
     {

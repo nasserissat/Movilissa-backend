@@ -1,49 +1,40 @@
 using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Movilissa.core.Interfaces.IServices;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Movilissa_api.Logic;
 
 public class EmailService : IEmailService
 {
-    private readonly string _smtpHost;
-    private readonly int _smtpPort;
-    private readonly string _smtpUser;
-    private readonly string _smtpPass;
-    
-    public EmailService(string smtpHost, int smtpPort, string smtpUser, string smtpPass)
-    {
-        _smtpHost = smtpHost;
-        _smtpPort = smtpPort;
-        _smtpUser = smtpUser;
-        _smtpPass = smtpPass;
-    }
-    public async Task SendPasswordResetEmail(string email, string token)
-    {
-        using (var client = new SmtpClient(_smtpHost)
-               {
-                   Port = _smtpPort,
-                   Credentials = new NetworkCredential(_smtpUser, _smtpPass),
-                   EnableSsl = true,
-               })
-        {
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("noreply@yourdomain.com"),
-                Subject = "Reset Your Password",
-                Body = $"Please reset your password by using this token: {token}",
-                IsBodyHtml = true,
-            };
-            mailMessage.To.Add(email);
+    private readonly SendGridClient _client;
+    private readonly EmailAddress _from;
 
-            try
-            {
-                await client.SendMailAsync(mailMessage);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("Failed to send email.", ex);
-            }
-        }
+    public EmailService(IOptions<SendGridSettings> settings)
+    {
+        _client = new SendGridClient(settings.Value.ApiKey);
+        _from = new EmailAddress(settings.Value.SenderEmail, settings.Value.SenderName);
     }
+
+    public async Task<Response> SendEmailAsync(string email, string subject, string htmlContent)
+    {
+        var to = new EmailAddress(email);
+        var msg = MailHelper.CreateSingleEmail(_from, to, subject, "", htmlContent);
+        var response = await _client.SendEmailAsync(msg);
+        return response; 
+
+        // Puedes manejar la respuesta o loguearla según necesites
+    }
+}
+
+public class SendGridSettings
+{
+    public string ApiKey { get; set; }
+    public string SenderEmail { get; set; }
+    public string SenderName { get; set; }
 }

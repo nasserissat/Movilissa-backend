@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Movilissa_api.Data.Context;
@@ -32,6 +33,7 @@ builder.Services.AddIdentity<User, IdentityRole>(
             options.Password.RequiredLength = 8;
         })
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
 
 builder.Services.AddAuthentication(auth =>
 {

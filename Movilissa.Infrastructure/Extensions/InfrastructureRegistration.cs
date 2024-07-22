@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,15 +21,18 @@ namespace Movilissa_api.Infrastructure.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b =>
                 b.MigrationsAssembly("Movilissa.Infrastructure")));
             
+            services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
+            services.AddSingleton<IEmailService, EmailService>();
+            
             // Configuring DI for Repositories
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBusRepository, BusRepository>();
             services.AddScoped<IBusScheduleRepository, BusScheduleRepository>();
             
+            
             // Configuring DI for Services
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<ICompanyService, CompanyService>();
 

@@ -1,6 +1,9 @@
+using SendGrid;
+
 namespace Movilissa.core.Interfaces.IServices;
 
 public interface IEmailService
 {
-    Task SendPasswordResetEmail(string email, string token);
+    Task<Response> SendEmailAsync(string email, string subject, string htmlContent);
+
 }

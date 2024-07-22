@@ -70,8 +70,7 @@ public class AuthService : IAuthService
 
         return new UserManagerResponse(true, "Password reset token generated successfully.", new string[] { token });
     }
-
-
+    
     public async Task<UserManagerResponse> ResetPassword(string email, string token, string newPassword)
     {
         var user = await _authRepository.FindUserByEmailAsync(email);
