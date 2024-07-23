@@ -48,15 +48,15 @@ public class AuthController : Controller
     
     [AllowAnonymous]
     [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPassword(string email)
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordData data)
     {
-        var result = await _authService.GenerateResetPasswordTokenAsync(email);
+        var result = await _authService.GenerateResetPasswordTokenAsync(data.Email);
 
         if (result.IsSuccess)
         {
-              var callbackUrl = Url.Action("ResetPassword", "Auth", new { result.Token, email }, Request.Scheme);
+              var callbackUrl = Url.Action("ResetPassword", "Auth", new { result.Token, data.Email }, Request.Scheme);
               var message = $"Por favor restablece tu contraseña haciendo clic aquí: <a href='{callbackUrl}'>link</a>";
-            await _emailService.SendEmailAsync(email, "Restablecer contraseña", message);
+            await _emailService.SendEmailAsync(data.Email, "Restablecer contraseña", message);
             return Ok(new { message = "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña." });
         }
 

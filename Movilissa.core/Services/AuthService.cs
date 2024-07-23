@@ -61,14 +61,14 @@ public class AuthService : IAuthService
     {
         var user = await _authRepository.FindUserByEmailAsync(email);
         if (user == null)
-            return new UserManagerResponse(false, "No user found with that email address.");
+            return new UserManagerResponse(false, "No se encontró un usuario con esa dirección de correo");
 
         var token = await _authRepository.GeneratePasswordResetTokenAsync(user);
     
         if (string.IsNullOrEmpty(token))
-            return new UserManagerResponse(false, "Failed to generate password reset token.");
+            return new UserManagerResponse(false, "Hubo un fallo en general el token de reseteo de contraseña");
 
-        return new UserManagerResponse(true, "Password reset token generated successfully.", new string[] { token });
+        return new UserManagerResponse(true, "El token para resetear la contrseña se ha generado exitosamente", new string[] { token });
     }
     
     public async Task<UserManagerResponse> ResetPassword(string email, string token, string newPassword)
@@ -76,17 +76,17 @@ public class AuthService : IAuthService
         var user = await _authRepository.FindUserByEmailAsync(email);
         if (user == null)
         {
-            return new UserManagerResponse(false, "No user found with that email address.");
+            return new UserManagerResponse(false, "No se encontró un usuario con esa dirección de correo");
         }
 
         var result = await _authRepository.ResetPasswordAsync(user, token, newPassword);
         if (result.Succeeded)
         {
-            return new UserManagerResponse(true, "Password reset successfully.");
+            return new UserManagerResponse(true, "La contraseña ha sido actualizada exitosamente");
         }
         else
         {
-            return new UserManagerResponse(false, "Failed to reset password", result.Errors.Select(e => e.Description));
+            return new UserManagerResponse(false, "Hubo un error al resetar la contraseña", result.Errors.Select(e => e.Description));
         }
     }
     
