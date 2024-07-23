@@ -10,7 +10,7 @@ using Movilissa.core.Interfaces.IServices;
 namespace Movilissa_api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api")]
 public class CompanyController : ControllerBase
 {
     private readonly IGenericService<User> _userService;
