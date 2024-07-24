@@ -5,6 +5,6 @@ namespace Movilissa.core.Interfaces.IServices;
 
 public interface IScheduleRepository
 {
-    Task<IEnumerable<Schedule>> GetAvailableSchedules(TicketAvailabilityData data);
+    Task<IEnumerable<Route>> GetAvailableRoutes(TicketAvailabilityData data);
 
 }

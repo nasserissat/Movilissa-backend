@@ -12,7 +12,7 @@ using Movilissa_api.Data.Context;
 namespace Movilissa.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240718034956_Initial")]
+    [Migration("20240724150807_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -419,7 +419,7 @@ namespace Movilissa.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("BusType");
+                    b.ToTable("BusTypes");
                 });
 
             modelBuilder.Entity("Movilissa_api.Models.Company", b =>
@@ -696,7 +696,7 @@ namespace Movilissa.Infrastructure.Migrations
 
                     b.HasIndex("RouteId");
 
-                    b.ToTable("RouteDestination");
+                    b.ToTable("RouteDestinations");
                 });
 
             modelBuilder.Entity("Movilissa_api.Models.Schedule", b =>
@@ -803,7 +803,7 @@ namespace Movilissa.Infrastructure.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
@@ -1162,9 +1162,7 @@ namespace Movilissa.Infrastructure.Migrations
                 {
                     b.HasOne("Movilissa_api.Models.Company", "Company")
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
                 });

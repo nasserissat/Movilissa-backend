@@ -15,33 +15,29 @@ public class ScheduleRepository : IScheduleRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Schedule>> GetAvailableSchedules(TicketAvailabilityData data)
+    public async Task<IEnumerable<Route>> GetAvailableRoutes(TicketAvailabilityData data)
     {
-        
-            Console.WriteLine(
-                $"OriginId: {data.OriginId}, DestinyId: {data.DestinyId}, Date: {data.Date}, CompanyId: {data.CompanyId}");
+        Console.WriteLine($"OriginId: {data.OriginId}, DestinyId: {data.DestinyId}, Date: {data.Date}, CompanyId: {data.CompanyId}");
 
-            var schedulesQuery = _context.Schedules
-                .Include(s => s.Route)
-                .ThenInclude(r => r.Origin)
-                .ThenInclude(b => b.Province)
-                .Include(s => s.Route)
-                .ThenInclude(r => r.Destinations)
-                .ThenInclude(rd => rd.Destination)
-                .ThenInclude(d => d.Province)
-                .Include(s => s.Company)
-                .Include(s => s.BusSchedules)
-                .ThenInclude(bs => bs.Bus)
-                .Where(s => s.Route.Origin.Province.Id == data.OriginId &&
-                            s.Route.Destinations.Any(rd => rd.Destination.Province.Id == data.DestinyId) &&
-                            s.DepartureTime.Date == data.Date.Date &&
-                            (!data.CompanyId.HasValue || s.CompanyId == data.CompanyId));
+        // Consultar RouteDestinations para obtener los registros que coinciden con el DestinyId
+        var matchingRouteDestinations = await _context.RouteDestinations
+            .Include(rd => rd.Destination)
+            .ThenInclude(d => d.Province)
+            .Include(rd => rd.Route)
+            .ThenInclude(r => r.Origin)
+            .ThenInclude(o => o.Province)
+            .Where(rd => rd.Destination.Province.Id == data.DestinyId)
+            .ToListAsync();
 
-            Console.WriteLine($"Query: {schedulesQuery.ToQueryString()}");
+        // Filtrar las rutas que tienen el OriginId especificado
+        var matchingRoutes = matchingRouteDestinations
+            .Where(rd => rd.Route.Origin.Province.Id == data.OriginId)
+            .Select(rd => rd.Route)
+            .Distinct()
+            .ToList();
 
-            var schedules = await schedulesQuery.ToListAsync();
-            return schedules;
-
+        return matchingRoutes;
     }
+
 
 }

@@ -24,24 +24,24 @@ public class ScheduleService : IScheduleService
 
         try
         {
-            var schedules = await _scheduleRepository.GetAvailableSchedules(data);
+            var routes = await _scheduleRepository.GetAvailableRoutes(data);
             var busSchedules = await _busScheduleRepository.GetAll();
 
-            var availableTickets = schedules.Select(s => new TicketAvailableList
-            {
-                Id = s.Id,
-                Company = new Item { Id = s.CompanyId, Description = s.Company.Name },
-                Origin = new Item { Id = s.Route.OriginId, Description = s.Route.Origin.Name },
-                Destiny = new Item { Id = data.DestinyId, Description = s.Route.Destinations.FirstOrDefault(d => d.DestinationId == data.DestinyId)?.Destination.Name },
-                Date = s.DepartureTime,
-                DepartureTime = s.DepartureTime.ToString("hh:mm tt"),
-                ArrivalTime = s.ArrivalTime?.ToString("hh:mm tt"),
-                EstimatedDuration = s.EstimatedDuration,
-                Price = s.Route.Destinations.FirstOrDefault(d => d.DestinationId == data.DestinyId)?.Price ?? 0,
-                SeatsAvailable = busSchedules.FirstOrDefault(bs => bs.ScheduleId == s.Id)?.AvailableSeats ?? 0
-            }).ToList();
+            // var availableTickets = routes.Select(s => new TicketAvailableList
+            // {
+            //     Id = s.Id,
+            //     Company = new Item { Id = s.CompanyId, Description = s.Company.Name },
+            //     Origin = new Item { Id = s.Route.OriginId, Description = s.Route.Origin.Name },
+            //     Destiny = new Item { Id = data.DestinyId, Description = s.Route.Destinations.FirstOrDefault(d => d.DestinationId == data.DestinyId)?.Destination.Name },
+            //     Date = s.DepartureTime,
+            //     DepartureTime = s.DepartureTime.ToString("hh:mm tt"),
+            //     ArrivalTime = s.ArrivalTime?.ToString("hh:mm tt"),
+            //     EstimatedDuration = s.EstimatedDuration,
+            //     Price = s.Route.Destinations.FirstOrDefault(d => d.DestinationId == data.DestinyId)?.Price ?? 0,
+            //     SeatsAvailable = busSchedules.FirstOrDefault(bs => bs.ScheduleId == s.Id)?.AvailableSeats ?? 0
+            // }).ToList();
 
-            response.Data = availableTickets;
+            // response.Data = availableTickets;
             response.IsSuccess = true;
             response.Message = "Boletos disponibles recuperados con éxito.";
         }

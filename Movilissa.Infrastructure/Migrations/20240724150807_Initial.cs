@@ -229,13 +229,12 @@ namespace Movilissa.Infrastructure.Migrations
                         name: "FK_AspNetUsers_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "BusType",
+                name: "BusTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -249,9 +248,9 @@ namespace Movilissa.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BusType", x => x.Id);
+                    table.PrimaryKey("PK_BusTypes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BusType_Companies_CompanyId",
+                        name: "FK_BusTypes_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -418,9 +417,9 @@ namespace Movilissa.Infrastructure.Migrations
                         principalTable: "BusStatus",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Buses_BusType_BusTypeId",
+                        name: "FK_Buses_BusTypes_BusTypeId",
                         column: x => x.BusTypeId,
-                        principalTable: "BusType",
+                        principalTable: "BusTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -486,7 +485,7 @@ namespace Movilissa.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "RouteDestination",
+                name: "RouteDestinations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -497,15 +496,15 @@ namespace Movilissa.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RouteDestination", x => x.Id);
+                    table.PrimaryKey("PK_RouteDestinations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RouteDestination_Branches_DestinationId",
+                        name: "FK_RouteDestinations_Branches_DestinationId",
                         column: x => x.DestinationId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RouteDestination_Routes_RouteId",
+                        name: "FK_RouteDestinations_Routes_RouteId",
                         column: x => x.RouteId,
                         principalTable: "Routes",
                         principalColumn: "Id",
@@ -844,8 +843,8 @@ namespace Movilissa.Infrastructure.Migrations
                 column: "ScheduleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BusType_CompanyId",
-                table: "BusType",
+                name: "IX_BusTypes_CompanyId",
+                table: "BusTypes",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
@@ -899,13 +898,13 @@ namespace Movilissa.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RouteDestination_DestinationId",
-                table: "RouteDestination",
+                name: "IX_RouteDestinations_DestinationId",
+                table: "RouteDestinations",
                 column: "DestinationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RouteDestination_RouteId",
-                table: "RouteDestination",
+                name: "IX_RouteDestinations_RouteId",
+                table: "RouteDestinations",
                 column: "RouteId");
 
             migrationBuilder.CreateIndex(
@@ -980,7 +979,7 @@ namespace Movilissa.Infrastructure.Migrations
                 name: "InvoiceDetails");
 
             migrationBuilder.DropTable(
-                name: "RouteDestination");
+                name: "RouteDestinations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -998,7 +997,7 @@ namespace Movilissa.Infrastructure.Migrations
                 name: "BusStatus");
 
             migrationBuilder.DropTable(
-                name: "BusType");
+                name: "BusTypes");
 
             migrationBuilder.DropTable(
                 name: "InvoiceStatuses");
