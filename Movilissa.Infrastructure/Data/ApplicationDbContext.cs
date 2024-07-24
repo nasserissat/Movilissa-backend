@@ -26,12 +26,13 @@ public class ApplicationDbContext: IdentityDbContext
     public DbSet<Bus> Buses { get; set; }
     public DbSet<Branch> Branches { get; set; }
     public DbSet<Amenity> Amenities { get; set; }
+    public DbSet<BusType> BusTypes { get; set; }
+    public DbSet<RouteDestination> RouteDestinations { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
             // Configuración de User
             modelBuilder.Entity<User>(entity =>
             {
@@ -79,6 +80,17 @@ public class ApplicationDbContext: IdentityDbContext
                 .HasOne(ba => ba.Amenity)
                 .WithMany(a => a.Buses)
                 .HasForeignKey(ba => ba.AmenityId);
+            // Relación entre Route y RouteDestination
+            
+            modelBuilder.Entity<RouteDestination>()
+                .HasOne(rd => rd.Route)
+                .WithMany(r => r.Destinations)
+                .HasForeignKey(rd => rd.RouteId);
+
+            modelBuilder.Entity<RouteDestination>()
+                .HasOne(rd => rd.Destination)
+                .WithMany()
+                .HasForeignKey(rd => rd.DestinationId);
 
         }
     
