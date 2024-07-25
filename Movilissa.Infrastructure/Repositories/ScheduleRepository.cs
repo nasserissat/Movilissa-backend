@@ -27,6 +27,7 @@ public class ScheduleRepository : IScheduleRepository
             .ThenInclude(r => r.Origin)
             .ThenInclude(o => o.Province)
             .Where(rd => rd.Destination.Province.Id == data.DestinyId)
+            .Where(rd => data.CompanyId == null || rd.Route.CompanyId == data.CompanyId)
             .ToListAsync();
 
         // Filtrar las rutas que tienen el OriginId especificado
