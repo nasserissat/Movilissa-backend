@@ -11,14 +11,79 @@ using Movilissa.core.Interfaces.IServices;
 public class BusController : ControllerBase
 {
     private readonly IGenericService<Amenity> _busAmenityService;
+    private readonly IGenericService<BusType> _busTypeService;
     private readonly IBusService _busService;
 
 
-    public BusController(IGenericService<Amenity> busAmenityService, IBusService busService)
+    public BusController(IGenericService<Amenity> busAmenityService, IBusService busService, IGenericService<BusType> busTypeService)
     {
         _busAmenityService = busAmenityService;
         _busService = busService;
+        _busTypeService = busTypeService;
     }
+    
+    
+    
+    
+    
+    // CRUD Operations for BusType
+
+    [AllowAnonymous]
+    [HttpGet("bus-types")]
+    public async Task<ActionResult<IEnumerable<BusTypeList>>> GetAllBusTypes()
+    {
+        var busTypes = await _busService.GetAllBusTypes();
+        return Ok(busTypes);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("bus-types/{id}")]
+    public async Task<ActionResult<BusType>> GetBusTypeById(int id)
+    {
+        var busType = await _busTypeService.GetById(id);
+        if (busType == null)
+        {
+            return NotFound($"BusType with ID {id} not found.");
+        }
+        return Ok(busType);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("bus-types")]
+    public async Task<IActionResult> CreateBusType([FromBody] BusTypeData busTypeData)
+    {
+        var newBusTypeId = await _busService.CreateBusType(busTypeData);
+        return CreatedAtAction(nameof(GetBusTypeById), new { id = newBusTypeId }, busTypeData);
+    }
+
+    [AllowAnonymous]
+    [HttpPut("bus-types/{id}")]
+    public async Task<IActionResult> UpdateBusType(int id, [FromBody] BusTypeData busTypeData)
+    {
+        var existingBusType = await _busTypeService.GetById(id);
+        if (existingBusType == null)
+        {
+            return NotFound($"BusType with ID {id} not found.");
+        }
+        await _busService.UpdateBusType(id, busTypeData);
+        return NoContent();
+    }
+
+    [AllowAnonymous]
+    [HttpDelete("bus-types/{id}")]
+    public async Task<IActionResult> DeleteBusType(int id)
+    {
+        var existingBusType = await _busTypeService.GetById(id);
+        if (existingBusType == null)
+        {
+            return NotFound($"BusType with ID {id} not found.");
+        }
+
+        await _busTypeService.Delete(existingBusType);
+        return NoContent();
+    }
+    
+    
     [AllowAnonymous]
 
     // GET: api/bus/amenities

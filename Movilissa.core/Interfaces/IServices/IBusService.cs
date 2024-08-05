@@ -12,9 +12,15 @@ public interface IBusService
     Task DeleteBus(int id);
 
     Task<int> CreateAmenity(AmenityData data);
-    Task<IEnumerable<AmenityList>> GetAllAmenities();
-    Task<int> UpdateAmenity(int id, AmenityData data);
-    Task<int> DeleteAmenity(int id);
     Task<IEnumerable<AmenityList>> FilterAmenities(AmenityFilter filter);
+    
+    Task<IEnumerable<BusTypeList>> GetAllBusTypes();
+    Task<int> CreateBusType(BusTypeData busTypeDTO);
+    Task<int> UpdateBusType(int id, BusTypeData busTypeData);
+    Task<int> DeleteBusType(int id);
+    Task<IEnumerable<BusTypeList>> FilterBusTypes(BusTypeFilter filter);
+
+    
+    
 
 }

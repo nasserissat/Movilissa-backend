@@ -30,17 +30,8 @@ public class BusService : IBusService
     // Obtener todos los buses
     public async Task<IEnumerable<BusList>> GetAllBuses()
     {
-        var buses = await _busRepository.GetAll(null, b => b.Company, b => b.BusType);
-        return buses.Select(b => new BusList
-        {
-            Id = b.Id,
-            IdentificationNumber = b.IdentificationNumber,
-            LicensePlate = b.LicensePlate,
-            Brand = b.BusType.Brand,
-            Model = b.BusType.Model,
-            SeatingCapacity = b.BusType.SeatingCapacity,
-            Status = Item.From((BusStatusEnum)b.StatusId)
-        }).ToList();
+        var buses = await _busRepository.GetBusList();
+        return buses;
     }
     
     // Crear un nuevo Bus
@@ -87,7 +78,7 @@ public class BusService : IBusService
             LicensePlate = bus.LicensePlate,
             CompanyName = bus.Company.Name,
             Model = bus.BusType.Model,
-            Brand = bus.BusType.Brand,
+            Brand = bus.BusType.Brand.Name,
             SeatingCapacity = bus.BusType.SeatingCapacity,
             Status = Item.From((BusStatusEnum)bus.StatusId),
             Amenities = bus.Amenities.Select(a => new Item { Id = a.Amenity.Id, Description = a.Amenity.Name }).ToList(),
@@ -134,9 +125,10 @@ public class BusService : IBusService
     {
         var newBusType = new BusType
         {
-            Brand = data.Brand.Trim(),
+            BrandId = data.BrandId,
             Model = data.Model.Trim(),
-            SeatingCapacity = data.SeatingCapacity,
+            SeatingCapacity = data.Capacity,
+            Status = data.StatusId,
             CompanyId = data.CompanyId
         };
 
@@ -147,12 +139,27 @@ public class BusService : IBusService
     public async Task<IEnumerable<BusTypeList>> GetAllBusTypes()
     {
         var busTypes = await _busTypeRepository.GetAll();
-        return busTypes.Select(bt => new BusTypeList
+        var busTypesList = busTypes.Select(bt => new BusTypeList
         {
             Id = bt.Id,
-            Brand = bt.Brand,
+            Brand = new Item { Id = bt.Brand.Id, Description = bt.Brand.Name },
             Model = bt.Model,
-            SeatingCapacity = bt.SeatingCapacity
+            Capacity = bt.SeatingCapacity,
+            Status = new Item { Id = bt.Status, Description = ((GenericStatus)bt.Status).ToString() }
+        }).ToList();
+        return busTypesList;
+    }
+
+    public async Task<IEnumerable<BusTypeList>> FilterBusTypes(BusTypeFilter filter)
+    {
+        var types = await _busRepository.FilterBusTypes(filter);
+        return types.Select(bt => new BusTypeList()
+        {
+            Id = bt.Id,
+            Brand = new Item { Id = bt.Brand.Id, Description = bt.Brand.Name },
+            Model = bt.Model,
+            Capacity = bt.SeatingCapacity,
+            Status = new Item { Id = bt.Status, Description = ((GenericStatus)bt.Status).ToString() }
         }).ToList();
     }
 
@@ -162,10 +169,10 @@ public class BusService : IBusService
         if (busType == null)
             throw new Exception("BusType not found.");
 
-        busType.Brand = data.Brand.Trim();
+        busType.BrandId = data.BrandId;
         busType.Model = data.Model.Trim();
-        busType.SeatingCapacity = data.SeatingCapacity;
-        busType.CompanyId = data.CompanyId;
+        busType.SeatingCapacity = data.Capacity;
+        busType.Status = data.StatusId;
 
         await _busTypeRepository.Update(busType);
         return busType.Id;
