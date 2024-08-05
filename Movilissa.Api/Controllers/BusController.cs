@@ -93,4 +93,12 @@ public class BusController : ControllerBase
         await _busAmenityService.Delete(amenity);
         return NoContent();
     }
+    [AllowAnonymous]
+
+    [HttpGet("filtered-amenities")]
+    public async Task<IActionResult> GetFilteredAmenities([FromQuery] AmenityFilter filter)
+    {
+        var amenities = await _busService.FilterAmenities(filter);
+        return Ok(amenities);
+    }
 }

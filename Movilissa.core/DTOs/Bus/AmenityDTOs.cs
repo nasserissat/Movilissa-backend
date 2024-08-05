@@ -24,6 +24,6 @@ public class AmenityList
 
 public class AmenityFilter
 {
-    public string Name { get; set; }
-    public int StatusId { get; set; }
+    public string? Name { get; set; }
+    public int? StatusId { get; set; }
 }

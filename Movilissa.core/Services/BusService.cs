@@ -391,7 +391,16 @@ public class BusService : IBusService
         await _amenityRepository.Delete(amenity);
         return amenity.Id;
     }
-
+    public async Task<IEnumerable<AmenityList>> FilterAmenities( AmenityFilter filter)
+    {
+        var amenities = await _busRepository.FilterAmenities(filter);
+        return amenities.Select(a => new AmenityList
+        {
+            Id = a.Id,
+            Name = a.Name,
+            Status = new Item { Id = a.Status, Description = Enum.GetName(typeof(GenericStatus), a.Status) }
+        }).ToList();
+    }
     #endregion
     
     

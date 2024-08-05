@@ -15,5 +15,6 @@ public interface IBusService
     Task<IEnumerable<AmenityList>> GetAllAmenities();
     Task<int> UpdateAmenity(int id, AmenityData data);
     Task<int> DeleteAmenity(int id);
+    Task<IEnumerable<AmenityList>> FilterAmenities(AmenityFilter filter);
 
 }
