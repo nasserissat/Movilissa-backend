@@ -10,6 +10,8 @@ public interface IBusService
     Task<int> CreateBus(BusData busDTO);
     Task UpdateBus(int id, BusData busData);
     Task DeleteBus(int id);
+    Task<IEnumerable<BusList>> FilterBus(BusFilter filter);
+
 
     Task<int> CreateAmenity(AmenityData data);
     Task<IEnumerable<AmenityList>> FilterAmenities(AmenityFilter filter);

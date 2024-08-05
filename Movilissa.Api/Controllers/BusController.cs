@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movilissa_api.Enums;
 using Movilissa_api.Models;
+using Movilissa.core.DTOs.Bus;
 using Movilissa.core.DTOs.Bus.AmenityDTOs;
 using Movilissa.core.DTOs.Shared;
 using Movilissa.core.Interfaces.IServices;
@@ -13,8 +14,7 @@ public class BusController : ControllerBase
     private readonly IGenericService<Amenity> _busAmenityService;
     private readonly IGenericService<BusType> _busTypeService;
     private readonly IBusService _busService;
-
-
+    
     public BusController(IGenericService<Amenity> busAmenityService, IBusService busService, IGenericService<BusType> busTypeService)
     {
         _busAmenityService = busAmenityService;
@@ -22,9 +22,71 @@ public class BusController : ControllerBase
         _busTypeService = busTypeService;
     }
     
+    // CRUD Operations for Bus
     
-    
-    
+    [AllowAnonymous]
+    [HttpGet("")]
+    public async Task<ActionResult<IEnumerable<BusList>>> GetAllBuses()
+    {
+        var buses = await _busService.GetAllBuses();
+        return Ok(buses);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BusDetailed>> GetBusById(int id)
+    {
+        var bus = await _busService.GetBusDetailed(id);
+        if (bus == null)
+        {
+            return NotFound($"Bus with ID {id} not found.");
+        }
+        return Ok(bus);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("")]
+    public async Task<IActionResult> CreateBus([FromBody] BusData busData)
+    {
+        var newBusId = await _busService.CreateBus(busData);
+        return CreatedAtAction(nameof(GetBusById), new { id = newBusId }, busData);
+    }
+
+    [AllowAnonymous]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateBus(int id, [FromBody] BusData busData)
+    {
+        var existingBus = await _busService.GetBusDetailed(id);
+        if (existingBus == null)
+        {
+            return NotFound($"Bus with ID {id} not found.");
+        }
+
+        await _busService.UpdateBus(id, busData);
+        return NoContent();
+    }
+
+    [AllowAnonymous]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteBus(int id)
+    {
+        var bus = await _busService.GetBusDetailed(id);
+        if (bus == null)
+        {
+            return NotFound($"Bus with ID {id} not found.");
+        }
+
+        await _busService.DeleteBus(id);
+        return NoContent();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("filter")]
+    public async Task<ActionResult<IEnumerable<BusList>>> FilterBuses([FromQuery] BusFilter filter)
+    {
+        var buses = await _busService.FilterBus(filter);
+        return Ok(buses);
+    }
     
     // CRUD Operations for BusType
 
@@ -82,6 +144,14 @@ public class BusController : ControllerBase
         await _busTypeService.Delete(existingBusType);
         return NoContent();
     }
+    [AllowAnonymous]
+    [HttpGet("filtered-bus-types")]
+    public async Task<ActionResult<IEnumerable<BusList>>> FilterBusTypes([FromQuery] BusTypeFilter filter)
+    {
+        var buses = await _busService.FilterBusTypes(filter);
+        return Ok(buses);
+    }
+
     
     
     [AllowAnonymous]

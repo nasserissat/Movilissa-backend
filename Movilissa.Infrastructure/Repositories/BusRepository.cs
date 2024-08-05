@@ -47,6 +47,29 @@ public class BusRepository : GenericRepository<Bus>, IBusRepository
                 .ThenInclude(a => a.Amenity)
             .FirstOrDefaultAsync(b => b.Id == busId);
     }
+    public async Task<IEnumerable<BusList>> FilterBus(BusFilter filter)
+    {
+        return await _context.Buses
+            .Include(b => b.BusType)
+            .Include(b => b.Company)
+            .Where(b => 
+                (string.IsNullOrEmpty(filter.IdentificationNumber) || b.IdentificationNumber.Contains(filter.IdentificationNumber))
+                && (string.IsNullOrEmpty(filter.LicensePlate) || b.LicensePlate.Contains(filter.LicensePlate))
+                && (!filter.BrandId.HasValue || b.BusType.BrandId == filter.BrandId)
+                && (!filter.StatusId.HasValue || b.StatusId == filter.StatusId)
+            )
+            .Select(b => new BusList
+            {
+                Id = b.Id,
+                IdentificationNumber = b.IdentificationNumber,
+                LicensePlate = b.LicensePlate,
+                Model = b.BusType.Model,
+                Brand = b.BusType.Brand.Name, // Asumiendo que Brand es un objeto dentro de BusType
+                SeatingCapacity = b.BusType.SeatingCapacity,
+                Status = new Item { Id = b.StatusId ?? default, Description = ((BusStatusEnum)(b.StatusId ?? default)).ToString() }
+            })
+            .ToListAsync();
+    }
     public async Task<IEnumerable<Amenity>> FilterAmenities(AmenityFilter filter)
     {
         return await _context.Amenities
@@ -54,11 +77,22 @@ public class BusRepository : GenericRepository<Bus>, IBusRepository
                         && (!filter.StatusId.HasValue || a.Status == filter.StatusId.Value))
             .ToListAsync();
     }
-    public async Task<IEnumerable<BusType>> FilterBusTypes(BusTypeFilter filter)
+    public async Task<IEnumerable<BusTypeList>> FilterBusTypes(BusTypeFilter filter)
     {
         return await _context.BusTypes
-            .Where(bt => (string.IsNullOrEmpty(filter.Name) || bt .Model.Contains(filter.Name))
-                        && (!filter.StatusId.HasValue || bt .Status == filter.StatusId.Value))
+            .Include(bt => bt.Brand)
+            .Where(bt => 
+                (string.IsNullOrEmpty(filter.Name) || bt.Model.Contains(filter.Name))
+                && (!filter.StatusId.HasValue || bt.Status == filter.StatusId)
+            )
+            .Select(bt => new BusTypeList
+            {
+                Id = bt.Id,
+                Brand = new Item { Id = bt.Brand.Id, Description = bt.Brand.Name },
+                Model = bt.Model,
+                Capacity = bt.SeatingCapacity,
+                Status = new Item { Id = bt.Status, Description = ((GenericStatus)bt.Status).ToString() }
+            })
             .ToListAsync();
     }
 }

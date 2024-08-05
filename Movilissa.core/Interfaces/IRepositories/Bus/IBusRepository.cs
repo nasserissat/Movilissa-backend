@@ -10,8 +10,10 @@ public interface IBusRepository : IGenericRepository<Bus>
     Task<Bus> GetBusWithDetails(int busId);
     Task<List<BusList>> GetBusList();
 
+    Task<IEnumerable<BusList>> FilterBus(BusFilter filter);
+
     Task<IEnumerable<Amenity>> FilterAmenities(AmenityFilter filter);
-    Task<IEnumerable<BusType>> FilterBusTypes(BusTypeFilter filter);
+    Task<IEnumerable<BusTypeList>> FilterBusTypes(BusTypeFilter filter);
 
 
     

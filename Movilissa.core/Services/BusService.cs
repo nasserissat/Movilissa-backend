@@ -50,8 +50,8 @@ public class BusService : IBusService
             LicensePlate = busDTO.LicensePlate.Trim(),
             CompanyId = busDTO.CompanyId,
             BusTypeId = busDTO.BusTypeId,
-            Amenities = new List<BusAmenity>()
-
+            Amenities = new List<BusAmenity>(),
+            StatusId = busDTO.StatusId
         };
         
         foreach (var amenityId in busDTO.AmenityIds)
@@ -93,8 +93,8 @@ public class BusService : IBusService
 
         bus.IdentificationNumber = busData.IdentificationNumber.Trim();
         bus.LicensePlate = busData.LicensePlate.Trim();
-        bus.CompanyId = busData.CompanyId;
         bus.BusTypeId = busData.BusTypeId;
+        bus.StatusId = busData.StatusId;
 
         bus.Amenities.Clear();
         foreach (var amenityId in busData.AmenityIds)
@@ -116,6 +116,13 @@ public class BusService : IBusService
 
         await _busRepository.Delete(bus);
     }
+
+    public async Task<IEnumerable<BusList>> FilterBus(BusFilter filter)
+    {
+        var buses = await _busRepository.FilterBus(filter);
+        return buses;
+    }
+
 
     #endregion
     
@@ -153,14 +160,7 @@ public class BusService : IBusService
     public async Task<IEnumerable<BusTypeList>> FilterBusTypes(BusTypeFilter filter)
     {
         var types = await _busRepository.FilterBusTypes(filter);
-        return types.Select(bt => new BusTypeList()
-        {
-            Id = bt.Id,
-            Brand = new Item { Id = bt.Brand.Id, Description = bt.Brand.Name },
-            Model = bt.Model,
-            Capacity = bt.SeatingCapacity,
-            Status = new Item { Id = bt.Status, Description = ((GenericStatus)bt.Status).ToString() }
-        }).ToList();
+        return types;
     }
 
     public async Task<int> UpdateBusType(int id, BusTypeData data)
