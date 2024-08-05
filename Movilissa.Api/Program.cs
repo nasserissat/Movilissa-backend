@@ -11,6 +11,7 @@ using Movilissa_api.Data.IRepositories;
 using Movilissa_api.Infrastructure.Extensions;
 using Movilissa_api.Logic;
 using Movilissa_api.Models;
+using Movilissa.core;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -54,12 +55,10 @@ builder.Services.AddAuthentication(auth =>
         ValidateIssuerSigningKey = true
     };
 });
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 });
-
-
 
 var app = builder.Build();
 if(app.Environment.IsDevelopment() || app.Environment.IsProduction()){
