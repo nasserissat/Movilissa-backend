@@ -5,10 +5,11 @@ using Movilissa.core.DTOs.Bus;
 using Movilissa.core.DTOs.Bus.AmenityDTOs;
 using Movilissa.core.DTOs.Shared;
 using Movilissa.core.Interfaces;
+using Movilissa.core.Interfaces.IServices;
 
 namespace Movilissa_api.Logic;
 
-public class BusService
+public class BusService : IBusService
 {
     private readonly IBusRepository _busRepository;
     private readonly IBusScheduleRepository _busScheduleRepository;
@@ -350,6 +351,7 @@ public class BusService
         var newAmenity = new Amenity
         {
             Name = data.Name.Trim(),
+            Status = data.StatusId.Value,
             CompanyId = data.CompanyId
         };
 

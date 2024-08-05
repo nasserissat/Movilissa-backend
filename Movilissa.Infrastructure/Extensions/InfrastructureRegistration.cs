@@ -40,6 +40,8 @@ namespace Movilissa_api.Infrastructure.Extensions
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<IBusService, BusService>();
+
 
 
 

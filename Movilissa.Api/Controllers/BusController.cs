@@ -11,10 +11,13 @@ using Movilissa.core.Interfaces.IServices;
 public class BusController : ControllerBase
 {
     private readonly IGenericService<Amenity> _busAmenityService;
+    private readonly IBusService _busService;
 
-    public BusController(IGenericService<Amenity> busAmenityService)
+
+    public BusController(IGenericService<Amenity> busAmenityService, IBusService busService)
     {
         _busAmenityService = busAmenityService;
+        _busService = busService;
     }
     [AllowAnonymous]
 
@@ -51,14 +54,8 @@ public class BusController : ControllerBase
     [HttpPost("amenities")]
     public async  Task<IActionResult>  CreateAmenity([FromBody] AmenityData amenityData)
     {
-        var newAmenity = new Amenity
-        {
-            Name = amenityData.Name,
-            Status = (int)GenericStatus.Activo,
-            CompanyId = amenityData.CompanyId
-        };
-        await _busAmenityService.Add(newAmenity);
-        return CreatedAtAction(nameof(GetAmenityById), new { id = newAmenity.Id }, newAmenity);
+        var newAmenity = await _busService.CreateAmenity(amenityData);
+        return CreatedAtAction(nameof(GetAmenityById), new { id = newAmenity }, newAmenity);
     }
     [AllowAnonymous]
 
