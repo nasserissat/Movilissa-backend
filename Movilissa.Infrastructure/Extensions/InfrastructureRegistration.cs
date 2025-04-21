@@ -19,9 +19,10 @@ namespace Movilissa_api.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationDbContext>(options =>  options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b =>
-                b.MigrationsAssembly("Movilissa.Infrastructure")));
-            
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString, b =>
+                    b.MigrationsAssembly("Movilissa.Infrastructure")));
+
             services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
             services.AddSingleton<IEmailService, EmailService>();
             

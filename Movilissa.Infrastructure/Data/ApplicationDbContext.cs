@@ -33,8 +33,19 @@ public class ApplicationDbContext: IdentityDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Configuración de User
-            modelBuilder.Entity<User>(entity =>
+        foreach (var entity in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var fk in entity.GetForeignKeys())
+            {
+                if (fk.PrincipalEntityType.ClrType == typeof(Company) &&
+                    fk.DeleteBehavior == DeleteBehavior.Cascade)
+                {
+                    fk.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
+        }
+        // Configuración de User
+        modelBuilder.Entity<User>(entity =>
             {
                 entity.Property(e => e.PasswordHash)
                     .IsRequired();
@@ -67,8 +78,24 @@ public class ApplicationDbContext: IdentityDbContext
                     .HasForeignKey(e => e.ScheduleId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            
-            modelBuilder.Entity<BusAmenity>()
+        modelBuilder.Entity<BusType>()
+            .HasOne(bt => bt.Company)
+            .WithMany()
+            .HasForeignKey(bt => bt.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict); // ⬅️ evitar cascada
+        modelBuilder.Entity<Bus>()
+            .HasOne(b => b.Company)
+            .WithMany(c => c.Buses)
+            .HasForeignKey(b => b.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict); // evitamos cascada duplicada
+        modelBuilder.Entity<Route>()
+            .HasOne(r => r.Company)
+            .WithMany()
+            .HasForeignKey(r => r.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+        modelBuilder.Entity<BusAmenity>()
                 .HasKey(ba => new { ba.BusId, ba.AmenityId });
 
             modelBuilder.Entity<BusAmenity>()
@@ -80,9 +107,69 @@ public class ApplicationDbContext: IdentityDbContext
                 .HasOne(ba => ba.Amenity)
                 .WithMany(a => a.Buses)
                 .HasForeignKey(ba => ba.AmenityId);
-            // Relación entre Route y RouteDestination
-            
-            modelBuilder.Entity<RouteDestination>()
+        // Relación entre Route y RouteDestination
+        modelBuilder.Entity<RouteDestination>()
+                .HasOne(rd => rd.Route)
+                .WithMany(r => r.Destinations)
+                .HasForeignKey(rd => rd.RouteId)
+                .OnDelete(DeleteBehavior.Restrict); // 👈 evita cascada duplicada con Branch
+
+        modelBuilder.Entity<RouteDestination>()
+                .HasOne(rd => rd.Destination)
+                .WithMany()
+                .HasForeignKey(rd => rd.DestinationId)
+                .OnDelete(DeleteBehavior.Cascade); // puedes dejar esto si quieres cascada al borrar la sucursal
+        modelBuilder.Entity<Schedule>()
+                .HasOne(s => s.Route)
+                .WithMany(r => r.Schedules)
+                .HasForeignKey(s => s.RouteId)
+                .OnDelete(DeleteBehavior.Restrict);
+        // Relación especial: Schedule -> Route
+        modelBuilder.Entity<Schedule>()
+            .HasOne(s => s.Route)
+            .WithMany(r => r.Schedules)
+            .HasForeignKey(s => s.RouteId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relación especial: Ticket -> Schedule
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Schedule)
+            .WithMany()
+            .HasForeignKey(t => t.ScheduleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relación especial: Payment -> Ticket
+        modelBuilder.Entity<Payment>()
+            .HasOne(p => p.Ticket)
+            .WithMany()
+            .HasForeignKey(p => p.TicketId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relación especial: Invoice -> Payment
+        modelBuilder.Entity<Invoice>()
+            .HasOne(i => i.Payment)
+            .WithMany()
+            .HasForeignKey(i => i.PaymentId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relación especial: InvoiceDetail -> Ticket
+        modelBuilder.Entity<InvoiceDetail>()
+            .HasOne(d => d.Ticket)
+            .WithMany()
+            .HasForeignKey(d => d.TicketId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Relación especial: InvoiceDetail -> Invoice
+        modelBuilder.Entity<InvoiceDetail>()
+            .HasOne(d => d.Invoice)
+            .WithMany(i => i.InvoiceDetails)
+            .HasForeignKey(d => d.InvoiceId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
+        modelBuilder.Entity<RouteDestination>()
                 .HasOne(rd => rd.Route)
                 .WithMany(r => r.Destinations)
                 .HasForeignKey(rd => rd.RouteId);
